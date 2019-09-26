@@ -1,0 +1,169 @@
+package com.apis;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.apis.database.DbController;
+import com.apis.models.DateTime;
+
+public class AdicionarComportamento extends AppCompatActivity {
+
+    private String nomeAnimal;
+    private int idAnimal;
+
+    private String compFisio;
+    private String compRepro;
+    private String usoSombra;
+    private String obS;
+
+    private DateTime dateTime = new DateTime();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_adicionar_comportamento);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        pegarDadosActivityPassada();
+
+        //Click do botão 'Salvar'
+        Button btnSalvar = (Button) findViewById(R.id.btnSalvar);
+        btnSalvar.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                salvarDados();
+            }
+        });
+
+    }
+
+    private void pegarDadosActivityPassada(){
+
+        if (getIntent().hasExtra("animal_nome") && getIntent().hasExtra("animal_id")){
+            nomeAnimal = getIntent().getStringExtra("animal_nome");
+            idAnimal = getIntent().getIntExtra("animal_id", 9999);
+
+            TextView txtInfo = (TextView)findViewById(R.id.lbl_info);
+            txtInfo.setText(nomeAnimal);
+
+        }
+
+    }
+
+
+    public void salvarDados(){
+
+        ///Pega os dados
+        RadioGroup btnGroupFisio = (RadioGroup) findViewById(R.id.btnGroupFisio);
+        switch (btnGroupFisio.getCheckedRadioButtonId()) {
+            case R.id.radioPastej:
+                compFisio = "Pastejando";
+                break;
+            case R.id.radioOP:
+                compFisio = "Ociosa em pé";
+                break;
+            case R.id.radioOD:
+                compFisio = "Ociosa deitada";
+                break;
+            case R.id.radioRumPe:
+                compFisio = "Ruminando em pé";
+                break;
+            case R.id.radioRumDeit:
+                compFisio = "Ruminando deitada";
+                break;
+        }
+
+        RadioGroup btnGroupRepro = (RadioGroup) findViewById(R.id.btnGroupRepro);
+        switch (btnGroupRepro.getCheckedRadioButtonId()) {
+            case R.id.radioAcMonta:
+                compRepro = "Aceita monta";
+                break;
+            case R.id.radioMontaOutra:
+                compRepro = "Monta outra";
+                break;
+            case R.id.radioInqueta:
+                compRepro = "Inquieta";
+                break;
+        }
+
+        RadioGroup btnGroupSombra = (RadioGroup) findViewById(R.id.btnGroupSombra);
+        switch (btnGroupSombra.getCheckedRadioButtonId()) {
+            case R.id.radioSol:
+                usoSombra = "Sol";
+                break;
+            case R.id.radioSombra:
+                usoSombra = "Sombra";
+                break;
+        }
+
+        EditText txtObs = (EditText) findViewById(R.id.textObs);
+        obS = txtObs.getText().toString();
+        ///Fim Pega os dados
+
+
+        ///Alerta para confirmação dos dados
+        LayoutInflater layoutInflater = LayoutInflater.from(AdicionarComportamento.this);
+        View promptView = layoutInflater.inflate(R.layout.alert_comportamento, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AdicionarComportamento.this);
+        alertDialogBuilder.setView(promptView);
+
+        final TextView lblNome = (TextView) promptView.findViewById(R.id.lbl_nome);
+        final TextView lblFisio = (TextView) promptView.findViewById(R.id.lbl_fisio);
+        final TextView lblRepro = (TextView) promptView.findViewById(R.id.lbl_repro);
+        final TextView lblSombra = (TextView) promptView.findViewById(R.id.lbl_sombra);
+        final TextView lblObs = (TextView) promptView.findViewById(R.id.lbl_obs);
+
+        lblNome.setText("Nome: "+nomeAnimal);
+        lblFisio.setText("Comportamento fisiológico: "+compFisio);
+        lblRepro.setText("Comportamento reprodutivo: "+compRepro);
+        lblSombra.setText("Uso da sombra: "+usoSombra);
+        lblObs.setText("Observação: "+obS);
+
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("Salvar", new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        ////Salva no BD
+                        DbController database = new DbController(getBaseContext());
+                        if (!database.adicionarComportamento(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), compFisio, compRepro, usoSombra, obS)) {
+                            Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(getApplicationContext(), "Salvo!", Toast.LENGTH_LONG).show();
+
+                            //Define o lembrete de adicionar mais dados
+
+                            finish();
+                        }
+
+                    }
+                })
+                .setNegativeButton("Cancelar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+
+    }
+
+
+
+}
