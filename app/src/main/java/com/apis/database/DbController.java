@@ -156,10 +156,11 @@ public class DbController {
 
             try {
                 try {
-                    File f;
-                    f = new File(Environment.getExternalStorageDirectory() + "/apis_lote_"+idLote+".txt");
 
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_"+retornarNomeLote(idLote).replace(" ", "")+"_"+idLote+".txt");
+                    //File f = new File(Environment.getExternalStorageDirectory() + "/dados_"+retornarNomeLote(idLote).replace(" ", "")+".txt");
                     if (!f.exists()){
+                        f.getParentFile().mkdirs();
                         f.createNewFile();
                     }
 
@@ -182,7 +183,7 @@ public class DbController {
         }
         cursor.close();
 
-        return "Dados exportados!";
+        return "Dados exportados para \"apis/dados.txt\"";
 
     }
 
