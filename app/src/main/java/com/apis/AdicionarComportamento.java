@@ -2,8 +2,10 @@ package com.apis;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +20,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.apis.database.DbController;
 import com.apis.models.DateTime;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class AdicionarComportamento extends AppCompatActivity {
 
@@ -145,6 +152,8 @@ public class AdicionarComportamento extends AppCompatActivity {
                         }else {
                             Toast.makeText(getApplicationContext(), "Salvo!", Toast.LENGTH_LONG).show();
 
+                            salvarTxt();
+
                             //Define o lembrete de adicionar mais dados
 
                             finish();
@@ -161,6 +170,44 @@ public class AdicionarComportamento extends AppCompatActivity {
 
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+
+    }
+
+    public String salvarTxt(int idAnimal, String nomeAnimal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obS){
+
+
+            String conteudo = "";
+
+            try {
+                try {
+
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_"+retornarNomeLote(idLote).replace(" ", "")+"_"+idLote+".txt");
+                    //File f = new File(Environment.getExternalStorageDirectory() + "/dados_"+retornarNomeLote(idLote).replace(" ", "")+".txt");
+                    if (!f.exists()){
+                        f.getParentFile().mkdirs();
+                        f.createNewFile();
+                    }
+
+                    FileOutputStream out = new FileOutputStream(f, true);
+                    out.write(conteudo.getBytes());
+                    out.write('\n');
+                    out.flush();
+                    out.close();
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                }
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+
+        }
+        cursor.close();
+
+        return "Dados exportados para \"apis/dados.txt\"";
 
     }
 

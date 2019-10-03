@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.apis.database.DbController;
 import com.apis.models.Animal;
-import com.apis.models.Lote;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -88,6 +87,7 @@ public class AnimalAdapter extends RecyclerView.Adapter<AnimalViewHolder> {
                 Intent intent = new Intent(context, AdicionarComportamento.class);
                 intent.putExtra("animal_nome", animais.get(position).getNome());
                 intent.putExtra("animal_id", animais.get(position).getId());
+                intent.putExtra("lote_id", animais.get(position).getLoteId());
                 context.startActivity(intent);
             }
         });
