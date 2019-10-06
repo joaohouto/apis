@@ -48,7 +48,7 @@ public class LoteAdapter extends RecyclerView.Adapter<LoteViewHolder>{
     public void onBindViewHolder(LoteViewHolder holder, final int position)
     {
         holder.nome.setText(lotes.get(position).getNome());
-        holder.experimento.setText(lotes.get(position).getExperimento());
+        holder.experimento.setText("["+lotes.get(position).getId()+"] "+lotes.get(position).getExperimento());
 
         final Lote lote = lotes.get(position);
 

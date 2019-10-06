@@ -80,7 +80,7 @@ public class DbController {
         while(cursor.moveToNext()){
             int id = cursor.getInt(cursor.getColumnIndex("id"));
             String nome = cursor.getString(cursor.getColumnIndex("nome"));
-            animais.add(new Animal(id, nome));
+            animais.add(new Animal(id, nome, loteId));
         }
         cursor.close();
         return animais;
@@ -140,24 +140,21 @@ public class DbController {
             String usoSombra = cursor.getString(cursor.getColumnIndex("usosombra"));
             String obs = cursor.getString(cursor.getColumnIndex("observacao"));
 
-            String conteudo = " _______________________________\n" +
-                              "| ID: "+id+" \n" +
-                              "| NOME: "+nome_animal+" | "+id_animal+"\n" +
-                              "|-------------------------------\n" +
-                              "| "+data+"\n" +
-                              "| "+hora+"\n" +
-                              "|-------------------------------\n" +
-                              "| "+compFisio+"\n" +
-                              "| "+compRepro+"\n" +
-                              "| "+usoSombra+"\n" +
-                              "| "+obs+"\n" +
-                              "|_______________________________\n" +
-                            "\n";
+            String conteudo = "{\n" +
+                    "\t\"animal_id\": "+id_animal+",\n" +
+                    "\t\"animal_nome\": "+nome_animal+",\n" +
+                    "\t\"data\": "+data+",\n" +
+                    "\t\"hora\": "+hora+",\n" +
+                    "\t\"fisiologico\": "+compFisio+",\n" +
+                    "\t\"reprodutivo\": "+compRepro+",\n" +
+                    "\t\"sombra\": "+usoSombra+",\n" +
+                    "\t\"observacao\": "+obs+"\n" +
+                    "}, ";
 
             try {
                 try {
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_"+retornarNomeLote(idLote).replace(" ", "")+"_"+idLote+".txt");
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_"+retornarNomeLote(idLote).replace(" ", "")+".json");
                     //File f = new File(Environment.getExternalStorageDirectory() + "/dados_"+retornarNomeLote(idLote).replace(" ", "")+".txt");
                     if (!f.exists()){
                         f.getParentFile().mkdirs();
@@ -183,7 +180,7 @@ public class DbController {
         }
         cursor.close();
 
-        return "Dados exportados para \"apis/dados.txt\"";
+        return "Dados exportados para \"apis/dados.json\"";
 
     }
 

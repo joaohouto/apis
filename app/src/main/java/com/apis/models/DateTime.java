@@ -13,7 +13,19 @@ public class DateTime {
     }
 
     public String pegarHora() {
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    public String pegarHoras() {
+        DateFormat dateFormat = new SimpleDateFormat("HH");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    public String pegarMinutos() {
+        DateFormat dateFormat = new SimpleDateFormat("mm");
         Date date = new Date();
         return dateFormat.format(date);
     }

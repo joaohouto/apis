@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -73,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         final EditText txtNomeLote = (EditText) promptView.findViewById(R.id.textNomeAnimal);
         final EditText txtExperimento = (EditText) promptView.findViewById(R.id.textExperimento);
 
+        txtNomeLote.requestFocus();
+
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("Salvar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -80,13 +80,20 @@ public class MainActivity extends AppCompatActivity {
                         nomeLote = txtNomeLote.getText().toString();
                         nomeExperimento = txtExperimento.getText().toString();
 
-                        ////Salva no BD
-                        DbController database = new DbController(getBaseContext());
-                        if (!database.adicionarLote(nomeLote, nomeExperimento)) {
-                            //Exibe mensagem de erro
-                            Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                        boolean camposValidos = true;
+
+                        if (camposValidos){
+
+                            ////Salva no BD
+                            DbController database = new DbController(getBaseContext());
+                            if (!database.adicionarLote(nomeLote, nomeExperimento)) {
+                                //Exibe mensagem de erro
+                                Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                            }
+                            configurarLista();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Preencha os campos!", Toast.LENGTH_LONG).show();
                         }
-                        configurarLista();
                     }
                 })
                 .setNegativeButton("Cancelar",
@@ -100,7 +107,13 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
+    final static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.VIBRATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     public void pedirPermissoes() {
+
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -112,30 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    final static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.VIBRATE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
 
 
 }

@@ -2,7 +2,6 @@ package com.apis;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +29,7 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     private String nomeAnimal;
     private int idAnimal;
+    private int idLote;
 
     private String compFisio;
     private String compRepro;
@@ -60,9 +60,10 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     private void pegarDadosActivityPassada(){
 
-        if (getIntent().hasExtra("animal_nome") && getIntent().hasExtra("animal_id")){
+        if (getIntent().hasExtra("animal_nome") && getIntent().hasExtra("animal_id") && getIntent().hasExtra("lote_id")){
             nomeAnimal = getIntent().getStringExtra("animal_nome");
             idAnimal = getIntent().getIntExtra("animal_id", 9999);
+            idLote = getIntent().getIntExtra("lote_id", 9999);
 
             TextView txtInfo = (TextView)findViewById(R.id.lbl_info);
             txtInfo.setText(nomeAnimal);
@@ -147,16 +148,22 @@ public class AdicionarComportamento extends AppCompatActivity {
 
                         ////Salva no BD
                         DbController database = new DbController(getBaseContext());
-                        if (!database.adicionarComportamento(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), compFisio, compRepro, usoSombra, obS)) {
-                            Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
-                        }else {
+                        if (database.adicionarComportamento(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), compFisio, compRepro, usoSombra, obS)) {
+
                             Toast.makeText(getApplicationContext(), "Salvo!", Toast.LENGTH_LONG).show();
+                            //salva os dados no txt também
+                            salvarTxt(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), compFisio, compRepro, usoSombra, obS);
 
-                            salvarTxt();
+                            //Trata os dados e define o lembrete de adicionar mais dados
+                            int horasAlarme = Integer.parseInt(dateTime.pegarHoras());
+                            int minutosAlarme = Integer.parseInt(dateTime.pegarMinutos());
 
-                            //Define o lembrete de adicionar mais dados
+                            StartUpBootReceiver.setAlarm(getBaseContext(), horasAlarme, minutosAlarme);
+
 
                             finish();
+                        }else {
+                            Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -173,16 +180,23 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     }
 
-    public String salvarTxt(int idAnimal, String nomeAnimal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obS){
+    public void salvarTxt(int idAnimal, String nomeAnimal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obS){
 
-
-            String conteudo = "";
+            String conteudo = "{\n" +
+                    "\t\"animal_id\": "+idAnimal+",\n" +
+                    "\t\"animal_nome\": "+nomeAnimal+",\n" +
+                    "\t\"data\": "+data+",\n" +
+                    "\t\"hora\": "+hora+",\n" +
+                    "\t\"fisiologico\": "+compFisio+",\n" +
+                    "\t\"reprodutivo\": "+compRepro+",\n" +
+                    "\t\"sombra\": "+usoSombra+",\n" +
+                    "\t\"observacao\": "+obS+"\n" +
+                    "}, ";
 
             try {
                 try {
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_"+retornarNomeLote(idLote).replace(" ", "")+"_"+idLote+".txt");
-                    //File f = new File(Environment.getExternalStorageDirectory() + "/dados_"+retornarNomeLote(idLote).replace(" ", "")+".txt");
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis/json", "dados_Lote"+idLote+".json");
                     if (!f.exists()){
                         f.getParentFile().mkdirs();
                         f.createNewFile();
@@ -203,11 +217,6 @@ public class AdicionarComportamento extends AppCompatActivity {
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
-
-        }
-        cursor.close();
-
-        return "Dados exportados para \"apis/dados.txt\"";
 
     }
 
