@@ -7,6 +7,8 @@ import java.util.Date;
 public class DateTime {
 
     public String pegarData() {
+
+
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         return dateFormat.format(date);

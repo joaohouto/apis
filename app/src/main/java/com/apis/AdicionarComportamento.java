@@ -160,7 +160,6 @@ public class AdicionarComportamento extends AppCompatActivity {
 
                             StartUpBootReceiver.setAlarm(getBaseContext(), horasAlarme, minutosAlarme);
 
-
                             finish();
                         }else {
                             Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();

@@ -1,8 +1,12 @@
 package com.apis;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,6 +55,26 @@ public class ListaAnimais extends AppCompatActivity {
                salvarAnimal();
             }
         });
+
+
+
+        /// Criar uma Intent para abrir uma Activity
+        Intent intent = new Intent(this, ListaAnimais.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "CANAL")
+//                                                                        ^ ID DO CANAL EM QUE A NOTIFICACAO SERA DISPARADA
+
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Meu titulo")
+                .setContentText("Meu texto informativo")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+                .setContentIntent(pendingIntent) /// Define a Intent que sera aberta ao clicar na notificação
+
+                .setAutoCancel(true);
+
     }
 
     private void pegarDadosActivityPassada(){
@@ -115,6 +140,21 @@ public class ListaAnimais extends AppCompatActivity {
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
 
+    }
+
+    private void createNotificationChannel() {
+
+        // Cria o canal de notificação para a API 26+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importancia = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("CANAL", "nomeDoCanal", importancia);
+//                                                            ^ ID DO CANAL
+            channel.setDescription("Descrição do canal");
+
+            // Registra o canal no sistema, você não pode mudar a importância ou outros comportamentos depois disso
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override

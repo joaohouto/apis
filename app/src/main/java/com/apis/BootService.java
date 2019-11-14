@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 public class BootService extends IntentService {
 
     private PowerManager.WakeLock wakeLock;
+    String CHANNEL_ID = "main.notifications";
 
     public BootService() {
         super("name");
@@ -31,7 +32,8 @@ public class BootService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-        //Lance a notificação aqui.
+        //Notificação aqui.
+
     }
 
     @Override
