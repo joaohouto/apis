@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.apis.database.DbController;
+import com.apis.database.DbHelper;
 import com.apis.models.DateTime;
 
 import java.io.File;
@@ -31,10 +32,10 @@ public class AdicionarComportamento extends AppCompatActivity {
     private int idAnimal;
     private int idLote;
 
-    private String compFisio;
-    private String compRepro;
-    private String usoSombra;
-    private String obS;
+    private String compFisio = "";
+    private String compRepro = "";
+    private String usoSombra = "";
+    private String obS = "";
 
     private DateTime dateTime = new DateTime();
 
@@ -47,6 +48,11 @@ public class AdicionarComportamento extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         pegarDadosActivityPassada();
+
+        //Seta TextView última atualização
+        DbController database = new DbController(this);
+        TextView atualizadoEm = (TextView) findViewById(R.id.atualizadoEm);
+        atualizadoEm.setText("Atualizado em "+ database.pegarUltimoUpdateAnimal(idAnimal));
 
         //Click do botão 'Salvar'
         Button btnSalvar = (Button) findViewById(R.id.btnSalvar);
@@ -67,7 +73,6 @@ public class AdicionarComportamento extends AppCompatActivity {
 
             TextView txtInfo = (TextView)findViewById(R.id.lbl_info);
             txtInfo.setText(nomeAnimal);
-
         }
 
     }
@@ -181,21 +186,12 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     public void salvarTxt(int idAnimal, String nomeAnimal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obS){
 
-            String conteudo = "{\n" +
-                    "\t\"animal_id\": "+idAnimal+",\n" +
-                    "\t\"animal_nome\": "+nomeAnimal+",\n" +
-                    "\t\"data\": "+data+",\n" +
-                    "\t\"hora\": "+hora+",\n" +
-                    "\t\"fisiologico\": "+compFisio+",\n" +
-                    "\t\"reprodutivo\": "+compRepro+",\n" +
-                    "\t\"sombra\": "+usoSombra+",\n" +
-                    "\t\"observacao\": "+obS+"\n" +
-                    "}, ";
+            String conteudo = "ID: "+idAnimal+";"+nomeAnimal+";Data/Hora: "+data+" "+hora+";Fisiologico: "+compFisio+"; Reprodutivo: "+compRepro+"; Uso de sombra: "+usoSombra+"; Obs: "+obS;
 
             try {
                 try {
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis/json", "dados_Lote"+idLote+".json");
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote"+idLote+".cvs");
                     if (!f.exists()){
                         f.getParentFile().mkdirs();
                         f.createNewFile();

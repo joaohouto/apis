@@ -124,6 +124,26 @@ public class DbController {
     }
 
 
+    //Pegar data/hora da última atualização lote
+
+    public String pegarUltimoUpdateAnimal(int idAnimal) {
+
+        String data = "";
+        String hora = "";
+
+
+        Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Comportamento WHERE Animal_id = " + idAnimal, null);
+        while (cursor.moveToNext()) {
+            data = cursor.getString(cursor.getColumnIndex("data"));
+            hora = cursor.getString(cursor.getColumnIndex("hora"));
+        }
+        cursor.close();
+
+        return data + " às "+hora;
+    }
+
+
+
 
     //Exportar dados
     public String exportarDados(int idLote){
@@ -155,7 +175,7 @@ public class DbController {
                 try {
 
                     File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_"+retornarNomeLote(idLote).replace(" ", "")+".json");
-                    //File f = new File(Environment.getExternalStorageDirectory() + "/dados_"+retornarNomeLote(idLote).replace(" ", "")+".txt");
+
                     if (!f.exists()){
                         f.getParentFile().mkdirs();
                         f.createNewFile();

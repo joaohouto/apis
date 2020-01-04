@@ -39,7 +39,10 @@
         <Preference
             app:key="github"
             app:summary="http://github.com/joaocou/apis/"
-            app:title="GitHub"/>
+            app:title="GitHub">
+                <intent android:action="android.intent.action.VIEW"
+                    android:data="http://github.com/joaocou/apis/" />
+        </Preference>
 
 
     </PreferenceCategory>
