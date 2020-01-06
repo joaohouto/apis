@@ -44,10 +44,6 @@ public class ListaAnimais extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        pegarDadosActivityPassada();
-
-        configurarLista();
-
         //Botão flutuante
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,14 +53,8 @@ public class ListaAnimais extends AppCompatActivity {
             }
         });
 
-        //Click do botão 'Exportar dados'
-        ImageButton btnExportar = (ImageButton) findViewById(R.id.btnExportarDados);
-        btnExportar.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                Snackbar.make(v, database.exportarDados(idLote), Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            }
-        });
-
+        pegarDadosActivityPassada();
+        configurarLista();
     }
 
     @Override

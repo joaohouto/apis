@@ -36,19 +36,21 @@
     <!-- Settings -->
     <string name="title_activity_settings">Configurações</string>
     <string-array name="settings_list_preference_titles">
+        <item>5 minutos</item>
         <item>15 minutos</item>
         <item>30 minutos</item>
         <item>1 hora</item>
         <item>2 horas</item>
-        <item>3 horas</item>
     </string-array>
     <string-array name="settings_list_preference_values">
+        <item>5</item>
         <item>15</item>
         <item>30</item>
         <item>60</item>
         <item>120</item>
-        <item>180</item>
     </string-array>
+
+    <string name="intervalo_atualizacao">5</string>
     <string name="title_activity_sett">Configurações</string>
 
     <!-- Preference Titles -->
@@ -68,8 +70,8 @@
     <string name="title_activity_drawer">Drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Ápis</string>
+    <string name="nav_header_subtitle">ifms.edu.br</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_home">Home</string>

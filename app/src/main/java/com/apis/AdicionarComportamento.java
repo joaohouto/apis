@@ -1,10 +1,18 @@
 package com.apis;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +25,8 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,10 +40,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 public class AdicionarComportamento extends AppCompatActivity {
 
+    String CHANNEL_ID = "main.notifications";
+
     private String nomeAnimal;
+    private String nomeLote;
     private int idAnimal;
     private int idLote;
 
@@ -45,6 +59,7 @@ public class AdicionarComportamento extends AppCompatActivity {
     private DateTime dateTime = new DateTime();
     DbController database = new DbController(this);
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -71,17 +86,6 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
-        switch (item.getItemId()) {
-            case android.R.id.home:  //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
-                finish();
-                break;
-            default:break;
-        }
-        return true;
-    }
-
     public void configurarLista() {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerComportamento);
@@ -102,6 +106,8 @@ public class AdicionarComportamento extends AppCompatActivity {
             nomeAnimal = getIntent().getStringExtra("animal_nome");
             idAnimal = getIntent().getIntExtra("animal_id", 9999);
             idLote = getIntent().getIntExtra("lote_id", 9999);
+
+            nomeLote = database.retornarNomeLote(idLote);
 
         }
 
@@ -195,16 +201,17 @@ public class AdicionarComportamento extends AppCompatActivity {
                         DbController database = new DbController(getBaseContext());
                         if (database.adicionarComportamento(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), compFisio, compRepro, usoSombra, obS)) {
 
-                            Toast.makeText(getApplicationContext(), "Salvo!", Toast.LENGTH_LONG).show();
                             //salva os dados no txt também
                             salvarTxt(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), compFisio, compRepro, usoSombra, obS);
 
-                            //Trata os dados e define o lembrete de adicionar mais dados
-                            int horasAlarme = Integer.parseInt(dateTime.pegarHoras());
-                            int minutosAlarme = Integer.parseInt(dateTime.pegarMinutos());
+                            //Pega o intervalo de atualizações das preferencias do app
 
-                            StartUpBootReceiver.setAlarm(getBaseContext(), horasAlarme, minutosAlarme);
+                            //Define o lembrete de adicionar mais dados
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                definirAlarme(5);
+                            }
 
+                            Toast.makeText(getApplicationContext(), "Salvo!", Toast.LENGTH_LONG).show();
                             finish();
                         }else {
                             Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
@@ -226,12 +233,13 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     public void salvarTxt(int idAnimal, String nomeAnimal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obS){
 
-            String conteudo = "ID Animal: "+idAnimal+";"+nomeAnimal+";Data/Hora: "+data+" "+hora+";Fisiologico: "+compFisio+"; Reprodutivo: "+compRepro+"; Uso de sombra: "+usoSombra+"; Obs: "+obS;
+            //String conteudo = "ID Animal;Data;Hora;Fisiologico;Reprodutivo;Uso de sombra;Observação;";
+            String conteudo = idAnimal+";"+nomeAnimal+";"+data+";"+hora+";"+compFisio+";"+compRepro+";"+usoSombra+";"+obS;
 
-            try {
+        try {
                 try {
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis/autosave", "dados_Lote"+idLote+"_"+database.retornarNomeLote(idLote).replace(" ", "")+".cvs");
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote"+idLote+"_"+database.retornarNomeLote(idLote).replace(" ", "")+".cvs");
                     if (!f.exists()){
                         f.getParentFile().mkdirs();
                         f.createNewFile();
@@ -255,6 +263,30 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void definirAlarme(int tempo){
+        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("animal_nome", nomeAnimal);
+        intent.putExtra("animal_id", idAnimal);
+        intent.putExtra("lote_id", idLote);
+        intent.putExtra("lote_nome", nomeLote);
+
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,  SystemClock.elapsedRealtime() + tempo * 60000, alarmIntent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
+        switch (item.getItemId()) {
+            case android.R.id.home:  //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
+                finish();
+                break;
+            default:break;
+        }
+        return true;
+    }
 
 }

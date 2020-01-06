@@ -33,17 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtNomeLote" />
 
-    <ImageButton
-        android:id="@+id/btnExportarDados"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/files"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/textNenhumAnimal"
         android:layout_width="wrap_content"
