@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/lbl_fisio"
+            android:id="@+id/lbl_repro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -46,7 +46,7 @@
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lbl_fisio" />
+            app:layout_constraintTop_toBottomOf="@+id/lbl_repro" />
 
         <TextView
             android:id="@+id/textView9"

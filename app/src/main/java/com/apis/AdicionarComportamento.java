@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,15 +17,19 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.apis.database.DbController;
-import com.apis.database.DbHelper;
+import com.apis.models.Comportamento;
 import com.apis.models.DateTime;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class AdicionarComportamento extends AppCompatActivity {
 
@@ -38,6 +43,7 @@ public class AdicionarComportamento extends AppCompatActivity {
     private String obS = "";
 
     private DateTime dateTime = new DateTime();
+    DbController database = new DbController(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +52,14 @@ public class AdicionarComportamento extends AppCompatActivity {
         setContentView(R.layout.activity_adicionar_comportamento);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         pegarDadosActivityPassada();
+        pegarUltimaAtualizacao();
+        configurarLista();
 
-        //Seta TextView última atualização
-        DbController database = new DbController(this);
-        TextView atualizadoEm = (TextView) findViewById(R.id.atualizadoEm);
-        atualizadoEm.setText("Atualizado em "+ database.pegarUltimoUpdateAnimal(idAnimal));
+        getSupportActionBar().setTitle(nomeAnimal);
 
         //Click do botão 'Salvar'
         Button btnSalvar = (Button) findViewById(R.id.btnSalvar);
@@ -64,6 +71,31 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
+        switch (item.getItemId()) {
+            case android.R.id.home:  //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
+                finish();
+                break;
+            default:break;
+        }
+        return true;
+    }
+
+    public void configurarLista() {
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerComportamento);
+
+        ArrayList<Comportamento> comportamentos =  database.retornarComportamento(idAnimal);
+
+        Collections.reverse(comportamentos);
+
+        recyclerView.setAdapter(new ComportamentoAdapter(comportamentos, this));
+        LinearLayoutManager layout = new LinearLayoutManager(this);
+
+        recyclerView.setLayoutManager(layout);
+    }
+
     private void pegarDadosActivityPassada(){
 
         if (getIntent().hasExtra("animal_nome") && getIntent().hasExtra("animal_id") && getIntent().hasExtra("lote_id")){
@@ -71,12 +103,20 @@ public class AdicionarComportamento extends AppCompatActivity {
             idAnimal = getIntent().getIntExtra("animal_id", 9999);
             idLote = getIntent().getIntExtra("lote_id", 9999);
 
-            TextView txtInfo = (TextView)findViewById(R.id.lbl_info);
-            txtInfo.setText(nomeAnimal);
         }
 
     }
 
+    private void pegarUltimaAtualizacao() {
+        TextView atualizadoEm = (TextView) findViewById(R.id.atualizadoEm);
+        String lastUpdate = database.pegarUltimoUpdateAnimal(idAnimal);
+
+        if(lastUpdate != ""){
+            atualizadoEm.setText("Atualizado em " + lastUpdate);
+        }else {
+            atualizadoEm.setText("Não existem observações para este animal.");
+        }
+    }
 
     public void salvarDados(){
 
@@ -134,11 +174,11 @@ public class AdicionarComportamento extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AdicionarComportamento.this);
         alertDialogBuilder.setView(promptView);
 
-        final TextView lblNome = (TextView) promptView.findViewById(R.id.lbl_nome);
-        final TextView lblFisio = (TextView) promptView.findViewById(R.id.lbl_fisio);
-        final TextView lblRepro = (TextView) promptView.findViewById(R.id.lbl_repro);
-        final TextView lblSombra = (TextView) promptView.findViewById(R.id.lbl_sombra);
-        final TextView lblObs = (TextView) promptView.findViewById(R.id.lbl_obs);
+        final TextView lblNome = (TextView) promptView.findViewById(R.id.lbl_nome_alert);
+        final TextView lblFisio = (TextView) promptView.findViewById(R.id.lbl_fisio_alert);
+        final TextView lblRepro = (TextView) promptView.findViewById(R.id.lbl_repro_alert);
+        final TextView lblSombra = (TextView) promptView.findViewById(R.id.lbl_sombra_alert);
+        final TextView lblObs = (TextView) promptView.findViewById(R.id.lbl_obs_alert);
 
         lblNome.setText("Nome: "+nomeAnimal);
         lblFisio.setText("Comportamento fisiológico: "+compFisio);
@@ -186,12 +226,12 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     public void salvarTxt(int idAnimal, String nomeAnimal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obS){
 
-            String conteudo = "ID: "+idAnimal+";"+nomeAnimal+";Data/Hora: "+data+" "+hora+";Fisiologico: "+compFisio+"; Reprodutivo: "+compRepro+"; Uso de sombra: "+usoSombra+"; Obs: "+obS;
+            String conteudo = "ID Animal: "+idAnimal+";"+nomeAnimal+";Data/Hora: "+data+" "+hora+";Fisiologico: "+compFisio+"; Reprodutivo: "+compRepro+"; Uso de sombra: "+usoSombra+"; Obs: "+obS;
 
             try {
                 try {
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote"+idLote+".cvs");
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis/autosave", "dados_Lote"+idLote+"_"+database.retornarNomeLote(idLote).replace(" ", "")+".cvs");
                     if (!f.exists()){
                         f.getParentFile().mkdirs();
                         f.createNewFile();

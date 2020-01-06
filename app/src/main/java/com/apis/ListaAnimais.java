@@ -1,31 +1,27 @@
 package com.apis;
 
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apis.database.DbController;
 import com.apis.models.Animal;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -35,6 +31,8 @@ public class ListaAnimais extends AppCompatActivity {
     private String nomeAnimal;
     private int idLote;
 
+    DbController database = new DbController(this);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +41,8 @@ public class ListaAnimais extends AppCompatActivity {
         setContentView(R.layout.activity_lista_animais);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         pegarDadosActivityPassada();
 
@@ -57,25 +57,25 @@ public class ListaAnimais extends AppCompatActivity {
             }
         });
 
+        //Click do botão 'Exportar dados'
+        ImageButton btnExportar = (ImageButton) findViewById(R.id.btnExportarDados);
+        btnExportar.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                Snackbar.make(v, database.exportarDados(idLote), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        });
 
+    }
 
-        /// Criar uma Intent para abrir uma Activity
-        Intent intent = new Intent(this, ListaAnimais.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "CANAL")
-//                                                                        ^ ID DO CANAL EM QUE A NOTIFICACAO SERA DISPARADA
-
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("Meu titulo")
-                .setContentText("Meu texto informativo")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-                .setContentIntent(pendingIntent) /// Define a Intent que sera aberta ao clicar na notificação
-
-                .setAutoCancel(true);
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
+        switch (item.getItemId()) {
+            case android.R.id.home:  //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
+                finish();
+                break;
+            default:break;
+        }
+        return true;
     }
 
     private void pegarDadosActivityPassada(){
@@ -100,6 +100,14 @@ public class ListaAnimais extends AppCompatActivity {
 
         DbController database = new DbController(this);
         ArrayList<Animal> animais = database.retornarAnimais(idLote);
+
+        TextView nenhumAnimal = (TextView) findViewById(R.id.textNenhumAnimal);
+        if(animais.size() > 0){
+            nenhumAnimal.setVisibility(View.INVISIBLE);
+        }else {
+            nenhumAnimal.setVisibility(View.VISIBLE);
+        }
+
 
         recyclerView.setAdapter(new AnimalAdapter(animais, this));
         LinearLayoutManager layout = new LinearLayoutManager(this);
@@ -149,44 +157,5 @@ public class ListaAnimais extends AppCompatActivity {
 
     }
 
-    private void createNotificationChannel() {
 
-        // Cria o canal de notificação para a API 26+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int importancia = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("CANAL", "nomeDoCanal", importancia);
-//                                                            ^ ID DO CANAL
-            channel.setDescription("Descrição do canal");
-
-            // Registra o canal no sistema, você não pode mudar a importância ou outros comportamentos depois disso
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                Intent intent = new Intent(this, SettingsActivity.class);
-                this.startActivity(intent);
-                intent.putExtra("lote_id", idLote);
-                return true;
-
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
 }

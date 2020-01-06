@@ -18,7 +18,7 @@ public class LoteViewHolder extends RecyclerView.ViewHolder {
         super(view);
         itemLista = (ConstraintLayout) view.findViewById(R.id.itemLista);
         nome = (TextView) view.findViewById(R.id.lbl_nome_animal);
-        experimento = (TextView) view.findViewById(R.id.lbl_id_animal);
+        experimento = (TextView) view.findViewById(R.id.lbl_id_comportamento);
         btnExcluir = (ImageButton) view.findViewById(R.id.btnDelete);
     }
 

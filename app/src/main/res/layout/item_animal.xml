@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/lbl_id_animal"
+            android:id="@+id/lbl_id_comportamento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -52,7 +52,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:background="?android:attr/listDivider"
-            app:layout_constraintTop_toBottomOf="@+id/lbl_id_animal"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_id_comportamento"
             tools:layout_editor_absoluteX="0dp" />
 
         <ImageView

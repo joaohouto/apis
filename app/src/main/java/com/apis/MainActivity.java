@@ -5,13 +5,17 @@ import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         pedirPermissoes();
         configurarLista();
 
+
         //Botão flutuante
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
 
         DbController database = new DbController(this);
         ArrayList<Lote> lotes = database.retornarLotes();
+
+        TextView nenhumLote = (TextView) findViewById(R.id.textNenhumLote);
+        if(lotes.size() > 0){
+            nenhumLote.setVisibility(View.INVISIBLE);
+        }else {
+            nenhumLote.setVisibility(View.VISIBLE);
+        }
 
         recyclerView.setAdapter(new LoteAdapter(lotes, this));
         LinearLayoutManager layout = new LinearLayoutManager(this);
@@ -152,6 +164,31 @@ public class MainActivity extends AppCompatActivity {
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                Intent intent = new Intent(this, SettingsActivity.class);
+                this.startActivity(intent);
+                return true;
+
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
         }
     }
 

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Environment;
 
 import com.apis.models.Animal;
+import com.apis.models.Comportamento;
 import com.apis.models.Lote;
 
 import java.io.File;
@@ -20,7 +21,6 @@ public class DbController {
     public DbController(Context ctx){
         database = new DbHelper(ctx);
     }
-
 
 
     ///LOTES
@@ -60,8 +60,6 @@ public class DbController {
         return lotes;
     }
 
-
-
     ///ANIMAL
     public boolean adicionarAnimal(String nome, int loteId){
 
@@ -86,8 +84,6 @@ public class DbController {
         return animais;
     }
 
-
-
     ///COMPORTAMENTO
     public boolean adicionarComportamento(int id_animal, String nome_animal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obs){
 
@@ -104,7 +100,26 @@ public class DbController {
         return database.getWritableDatabase().insert("Comportamento", null, cv) > 0;
     }
 
+    public ArrayList<Comportamento> retornarComportamento(int animalId){
 
+        Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Comportamento WHERE Animal_id = "+animalId, null);
+
+        ArrayList<Comportamento> comportamentos = new ArrayList<>();
+        while(cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String nome_animal = cursor.getString(cursor.getColumnIndex("Animal_nome"));
+            int id_animal = cursor.getInt(cursor.getColumnIndex("Animal_id"));
+            String data = cursor.getString(cursor.getColumnIndex("data"));
+            String hora = cursor.getString(cursor.getColumnIndex("hora"));
+            String compFisio = cursor.getString(cursor.getColumnIndex("fisiologico"));
+            String compRepro = cursor.getString(cursor.getColumnIndex("reprodutivo"));
+            String usoSombra = cursor.getString(cursor.getColumnIndex("usosombra"));
+            String obs =  cursor.getString(cursor.getColumnIndex("observacao"));
+            comportamentos.add(new Comportamento(id, nome_animal, id_animal, data, hora, compFisio, compRepro, usoSombra, obs));
+        }
+        cursor.close();
+        return comportamentos;
+    }
 
     //Excluir
     public boolean excluir(int id, String tableName){
@@ -123,14 +138,11 @@ public class DbController {
         return id;
     }
 
-
     //Pegar data/hora da última atualização lote
-
     public String pegarUltimoUpdateAnimal(int idAnimal) {
 
         String data = "";
         String hora = "";
-
 
         Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Comportamento WHERE Animal_id = " + idAnimal, null);
         while (cursor.moveToNext()) {
@@ -139,17 +151,18 @@ public class DbController {
         }
         cursor.close();
 
-        return data + " às "+hora;
+        if(data == hora){
+            return "";
+        }else {
+            return data + " às " + hora;
+        }
     }
-
-
-
 
     //Exportar dados
     public String exportarDados(int idLote){
 
         Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Comportamento WHERE Animal_id IN (SELECT id FROM Animal WHERE Lote_id = "+idLote+");", null);
-        while(cursor.moveToNext()){
+        while(cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex("id"));
             String nome_animal = cursor.getString(cursor.getColumnIndex("Animal_nome"));
             String id_animal = cursor.getString(cursor.getColumnIndex("Animal_id"));
@@ -160,23 +173,13 @@ public class DbController {
             String usoSombra = cursor.getString(cursor.getColumnIndex("usosombra"));
             String obs = cursor.getString(cursor.getColumnIndex("observacao"));
 
-            String conteudo = "{\n" +
-                    "\t\"animal_id\": "+id_animal+",\n" +
-                    "\t\"animal_nome\": "+nome_animal+",\n" +
-                    "\t\"data\": "+data+",\n" +
-                    "\t\"hora\": "+hora+",\n" +
-                    "\t\"fisiologico\": "+compFisio+",\n" +
-                    "\t\"reprodutivo\": "+compRepro+",\n" +
-                    "\t\"sombra\": "+usoSombra+",\n" +
-                    "\t\"observacao\": "+obs+"\n" +
-                    "}, ";
+            String conteudo = "ID Animal: " + id_animal + ";" + nome_animal + ";Data/Hora: " + data + " " + hora + ";Fisiologico: " + compFisio + "; Reprodutivo: " + compRepro + "; Uso de sombra: " + usoSombra + "; Obs: " + obs;
 
             try {
                 try {
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_"+retornarNomeLote(idLote).replace(" ", "")+".json");
-
-                    if (!f.exists()){
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote" + idLote + "_" + retornarNomeLote(idLote).replace(" ", "") + ".cvs");
+                    if (!f.exists()) {
                         f.getParentFile().mkdirs();
                         f.createNewFile();
                     }
@@ -196,12 +199,9 @@ public class DbController {
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
-
+            cursor.close();
         }
-        cursor.close();
 
-        return "Dados exportados para \"apis/dados.json\"";
-
+        return "Dados exportados para dados_Lote" + idLote + "_" + retornarNomeLote(idLote).replace(" ", "") + ".cvs";
     }
-
 }

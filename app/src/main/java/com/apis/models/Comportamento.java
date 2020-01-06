@@ -6,7 +6,7 @@ public class Comportamento implements Serializable {
 
     private int id;
     private String nome_animal;
-    private String id_animal;
+    private int id_animal;
     private String data;
     private String hora;
     private String compFisio;
@@ -14,7 +14,7 @@ public class Comportamento implements Serializable {
     private String usoSombra;
     private String obs;
 
-    public Comportamento(int id, String nome_animal, String id_animal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obs) {
+    public Comportamento(int id, String nome_animal, int id_animal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obs) {
         this.id = id;
         this.nome_animal = nome_animal;
         this.id_animal = id_animal;
@@ -27,7 +27,7 @@ public class Comportamento implements Serializable {
     }
 
     public int getId() { return id; }
-    public String getId_animal() { return id_animal; }
+    public int getId_animal() { return id_animal; }
     public String getNome_animal() { return nome_animal; }
     public String getData() { return data; }
     public String getHora() { return hora; }

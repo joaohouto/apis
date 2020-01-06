@@ -1,6 +1,7 @@
 package com.apis;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +24,6 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        pegarDadosActivityPassada();
-
 
     }
 
@@ -36,11 +35,15 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private void pegarDadosActivityPassada(){
-
-        if (getIntent().hasExtra("lote_id")){
-            idLote = getIntent().getIntExtra("lote_id", 9999);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
+        switch (item.getItemId()) {
+            case android.R.id.home:  //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
+                finish();
+                break;
+            default:break;
         }
-
+        return true;
     }
+
 }
