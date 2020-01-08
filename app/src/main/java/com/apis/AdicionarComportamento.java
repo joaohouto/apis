@@ -7,16 +7,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -25,14 +24,14 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apis.database.DbController;
 import com.apis.models.Comportamento;
 import com.apis.models.DateTime;
+import com.apis.models.Preferencia;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,20 +39,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 
 public class AdicionarComportamento extends AppCompatActivity {
-
-    String CHANNEL_ID = "main.notifications";
 
     private String nomeAnimal;
     private String nomeLote;
     private int idAnimal;
     private int idLote;
 
-    private String compFisio = "";
-    private String compRepro = "";
-    private String usoSombra = "";
+    private String comportamento = "";
     private String obS = "";
 
     private DateTime dateTime = new DateTime();
@@ -72,7 +66,8 @@ public class AdicionarComportamento extends AppCompatActivity {
 
         pegarDadosActivityPassada();
         pegarUltimaAtualizacao();
-        configurarLista();
+        configurarListaComportamentos();
+        configurarListaPreferencias();
 
         getSupportActionBar().setTitle(nomeAnimal);
 
@@ -86,7 +81,7 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     }
 
-    public void configurarLista() {
+    public void configurarListaComportamentos() {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerComportamento);
 
@@ -98,6 +93,20 @@ public class AdicionarComportamento extends AppCompatActivity {
         LinearLayoutManager layout = new LinearLayoutManager(this);
 
         recyclerView.setLayoutManager(layout);
+    }
+
+    public void configurarListaPreferencias(){
+
+        RecyclerView recyclerViewComp = (RecyclerView) findViewById(R.id.recyclerComportamentoPersonalizado);
+
+        DbController database = new DbController(this);
+        ArrayList<Preferencia> preferencias = database.retornarPreferencia();
+
+
+        recyclerViewComp.setAdapter(new PreferenciaAdapter(preferencias, this));
+        LinearLayoutManager layoutComp = new LinearLayoutManager(this);
+
+        recyclerViewComp.setLayoutManager(layoutComp);
     }
 
     private void pegarDadosActivityPassada(){
@@ -122,6 +131,13 @@ public class AdicionarComportamento extends AppCompatActivity {
         }else {
             atualizadoEm.setText("Não existem observações para este animal.");
         }
+
+        //Verifica se irá mandar notificações
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        final boolean receberNotificacao = sharedPreferences.getBoolean("notifications", false);
+
+        final TextView lblNotificacoes = (TextView) findViewById(R.id.lbl_notificacoes_info);
+        lblNotificacoes.setText(receberNotificacao ? ">> Notificações ativadas" : ">> Notificações desativadas");
     }
 
     public void salvarDados(){
@@ -130,44 +146,55 @@ public class AdicionarComportamento extends AppCompatActivity {
         RadioGroup btnGroupFisio = (RadioGroup) findViewById(R.id.btnGroupFisio);
         switch (btnGroupFisio.getCheckedRadioButtonId()) {
             case R.id.radioPastej:
-                compFisio = "Pastejando";
+                comportamento = comportamento + "Pastejando;";
                 break;
             case R.id.radioOP:
-                compFisio = "Ociosa em pé";
+                comportamento = comportamento +  "Ociosa em pé;";
                 break;
             case R.id.radioOD:
-                compFisio = "Ociosa deitada";
+                comportamento = comportamento +  "Ociosa deitada;";
                 break;
             case R.id.radioRumPe:
-                compFisio = "Ruminando em pé";
+                comportamento = comportamento +  "Ruminando em pé;";
                 break;
             case R.id.radioRumDeit:
-                compFisio = "Ruminando deitada";
+                comportamento = comportamento +  "Ruminando deitada;";
+                break;
+            default:
+                comportamento = comportamento +  ";";
                 break;
         }
 
         RadioGroup btnGroupRepro = (RadioGroup) findViewById(R.id.btnGroupRepro);
         switch (btnGroupRepro.getCheckedRadioButtonId()) {
             case R.id.radioAcMonta:
-                compRepro = "Aceita monta";
+                comportamento = comportamento + "Aceita monta;";
                 break;
             case R.id.radioMontaOutra:
-                compRepro = "Monta outra";
+                comportamento = comportamento + "Monta outra;";
                 break;
             case R.id.radioInqueta:
-                compRepro = "Inquieta";
+                comportamento = comportamento + "Inquieta;";
+                break;
+            default:
+                comportamento = comportamento +  ";";
                 break;
         }
 
         RadioGroup btnGroupSombra = (RadioGroup) findViewById(R.id.btnGroupSombra);
         switch (btnGroupSombra.getCheckedRadioButtonId()) {
             case R.id.radioSol:
-                usoSombra = "Sol";
+                comportamento = comportamento + "Sol;";
                 break;
             case R.id.radioSombra:
-                usoSombra = "Sombra";
+                comportamento = comportamento + "Sombra;";
+                break;
+            default:
+                comportamento = comportamento +  ";";
                 break;
         }
+
+
 
         EditText txtObs = (EditText) findViewById(R.id.textObs);
         obS = txtObs.getText().toString();
@@ -181,16 +208,13 @@ public class AdicionarComportamento extends AppCompatActivity {
         alertDialogBuilder.setView(promptView);
 
         final TextView lblNome = (TextView) promptView.findViewById(R.id.lbl_nome_alert);
-        final TextView lblFisio = (TextView) promptView.findViewById(R.id.lbl_fisio_alert);
-        final TextView lblRepro = (TextView) promptView.findViewById(R.id.lbl_repro_alert);
-        final TextView lblSombra = (TextView) promptView.findViewById(R.id.lbl_sombra_alert);
+        final TextView lblComportamento = (TextView) promptView.findViewById(R.id.lbl_comportamento);
         final TextView lblObs = (TextView) promptView.findViewById(R.id.lbl_obs_alert);
 
         lblNome.setText("Nome: "+nomeAnimal);
-        lblFisio.setText("Comportamento fisiológico: "+compFisio);
-        lblRepro.setText("Comportamento reprodutivo: "+compRepro);
-        lblSombra.setText("Uso da sombra: "+usoSombra);
+        lblComportamento.setText("Comportamento: "+comportamento.replace(";", " | "));
         lblObs.setText("Observação: "+obS);
+
 
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("Salvar", new DialogInterface.OnClickListener() {
@@ -199,16 +223,30 @@ public class AdicionarComportamento extends AppCompatActivity {
 
                         ////Salva no BD
                         DbController database = new DbController(getBaseContext());
-                        if (database.adicionarComportamento(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), compFisio, compRepro, usoSombra, obS)) {
+                        if (database.adicionarComportamento(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), comportamento, obS)) {
 
-                            //salva os dados no txt também
-                            salvarTxt(idAnimal, nomeAnimal, dateTime.pegarData(), dateTime.pegarHora(), compFisio, compRepro, usoSombra, obS);
+                            //Trata o horário
+                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                            boolean usarNtp = sharedPreferences.getBoolean("datetime_web", false);
 
-                            //Pega o intervalo de atualizações das preferencias do app
+                            String horaDefinida = dateTime.pegarHora();
+                            String dataDefinida = dateTime.pegarData();
 
-                            //Define o lembrete de adicionar mais dados
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                definirAlarme(5);
+                            salvarTxt(idAnimal, nomeAnimal, dataDefinida, horaDefinida, comportamento, obS);
+
+                            //Verifica se o usuário quer receber a notificação
+                            boolean receberNotificacao = sharedPreferences.getBoolean("notifications", false);
+
+                            if(receberNotificacao){
+
+                                //Pega o intervalo de atualizações das preferencias do  app
+                                String intervaloAtualizacaoString = sharedPreferences.getString("intervalo_atualizacao", "0");
+                                int intervaloAtualizacao = Integer.parseInt(intervaloAtualizacaoString);
+
+                                //Define o lembrete de adicionar mais dados
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    definirAlarme(intervaloAtualizacao);
+                                }
                             }
 
                             Toast.makeText(getApplicationContext(), "Salvo!", Toast.LENGTH_LONG).show();
@@ -223,6 +261,8 @@ public class AdicionarComportamento extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
+                                comportamento = "";
+                                obS = "";
                             }
                         });
 
@@ -231,10 +271,10 @@ public class AdicionarComportamento extends AppCompatActivity {
 
     }
 
-    public void salvarTxt(int idAnimal, String nomeAnimal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obS){
+    public void salvarTxt(int idAnimal, String nomeAnimal, String data, String hora, String comportamento, String obS){
 
-            //String conteudo = "ID Animal;Data;Hora;Fisiologico;Reprodutivo;Uso de sombra;Observação;";
-            String conteudo = idAnimal+";"+nomeAnimal+";"+data+";"+hora+";"+compFisio+";"+compRepro+";"+usoSombra+";"+obS;
+        //String conteudo = "ID Animal;Data;Hora;Fisiologico;Reprodutivo;Uso de sombra;Observação;";
+        String conteudo = idAnimal+";"+nomeAnimal+";"+data+";"+hora+";"+comportamento+";"+obS;
 
         try {
                 try {

@@ -125,17 +125,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         boolean camposValidos = true;
 
+                        if (nomeLote.equals("")){
+                            camposValidos = false;
+                        }
+
                         if (camposValidos){
 
                             ////Salva no BD
                             DbController database = new DbController(getBaseContext());
                             if (!database.adicionarLote(nomeLote, nomeExperimento)) {
-                                //Exibe mensagem de erro
                                 Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
                             }
                             configurarLista();
                         }else{
-                            Toast.makeText(getApplicationContext(), "Preencha os campos!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "O lote não pode ter um nome em branco!", Toast.LENGTH_LONG).show();
                         }
                     }
                 })
@@ -208,6 +211,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
+            this.startActivity(intent);
+
+        }else if (id == R.id.nav_preferencias) {
+            Intent intent = new Intent(this, ListaPreferencias.class);
             this.startActivity(intent);
 
         } else if (id == R.id.nav_github) {

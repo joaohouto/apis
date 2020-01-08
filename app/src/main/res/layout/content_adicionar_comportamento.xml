@@ -162,7 +162,28 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/lbl_sombra" />
+
         </RadioGroup>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Personalizado"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnGroupSombra" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerComportamentoPersonalizado"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <TextView
             android:id="@+id/textView6"
@@ -173,7 +194,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/lbl_observacoes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnGroupSombra" />
+            app:layout_constraintTop_toBottomOf="@+id/recyclerComportamentoPersonalizado" />
 
         <EditText
             android:id="@+id/textObs"
@@ -223,14 +244,27 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="8dp"
             android:background="@color/transparent"
             android:text="Atualizado às 13:48 04/01/2020"
             android:textColor="@color/colorAccent"
             android:textSize="12sp"
             android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnSalvar" />
+            app:layout_constraintTop_toBottomOf="@+id/lbl_comportamentos_reg" />
+
+        <TextView
+            android:id="@+id/lbl_notificacoes_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Notificações"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constraintStart_toEndOf="@+id/atualizadoEm"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_comportamentos_reg" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerComportamento"

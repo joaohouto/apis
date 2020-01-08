@@ -15,7 +15,7 @@ public class ComportamentoViewHolder extends RecyclerView.ViewHolder {
 
     public ComportamentoViewHolder(View view) {
         super(view);
-        itemLista = (ConstraintLayout) view.findViewById(R.id.itemLista);
+        itemLista = (ConstraintLayout) view.findViewById(R.id.itemListaComportamento);
         data = (TextView) view.findViewById(R.id.lbl_dataC);
         hora = (TextView) view.findViewById(R.id.lbl_horaC);
         info = (TextView) view.findViewById(R.id.lbl_infoC);

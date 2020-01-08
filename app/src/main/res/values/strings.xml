@@ -36,6 +36,7 @@
     <!-- Settings -->
     <string name="title_activity_settings">Configurações</string>
     <string-array name="settings_list_preference_titles">
+        <item>1 minuto</item>
         <item>5 minutos</item>
         <item>15 minutos</item>
         <item>30 minutos</item>
@@ -43,6 +44,7 @@
         <item>2 horas</item>
     </string-array>
     <string-array name="settings_list_preference_values">
+        <item>1</item>
         <item>5</item>
         <item>15</item>
         <item>30</item>

@@ -10,6 +10,10 @@
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/action_settings" />
             <item
+                android:id="@+id/nav_preferencias"
+                android:icon="@drawable/prefs"
+                android:title="Comportamentos" />
+            <item
                 android:id="@+id/nav_github"
                 android:icon="@drawable/github"
                 android:title="Github" />

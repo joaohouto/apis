@@ -16,9 +16,9 @@ public class AnimalViewHolder extends RecyclerView.ViewHolder {
 
     public AnimalViewHolder(View view) {
         super(view);
-        itemLista = (ConstraintLayout) view.findViewById(R.id.itemLista);
+        itemLista = (ConstraintLayout) view.findViewById(R.id.itemListaAnimal);
         nome = (TextView) view.findViewById(R.id.lbl_nome_animal);
-        idAnimal = (TextView) view.findViewById(R.id.lbl_id_comportamento);
-        btnExcluir = (ImageButton) view.findViewById(R.id.btnDelete);
+        idAnimal = (TextView) view.findViewById(R.id.lbl_id_animal);
+        btnExcluir = (ImageButton) view.findViewById(R.id.btnDeleteAnimal);
     }
 }

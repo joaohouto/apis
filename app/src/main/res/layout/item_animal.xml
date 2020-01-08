@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/itemLista"
+        android:id="@+id/itemListaAnimal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/lbl_id_comportamento"
+            android:id="@+id/lbl_id_animal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -34,7 +34,7 @@
             app:layout_constraintTop_toBottomOf="@+id/lbl_nome_animal" />
 
         <ImageButton
-            android:id="@+id/btnDelete"
+            android:id="@+id/btnDeleteAnimal"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginTop="8dp"
@@ -50,10 +50,15 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:background="?android:attr/listDivider"
-            app:layout_constraintTop_toBottomOf="@+id/lbl_id_comportamento"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_id_animal" />
 
         <ImageView
             android:id="@+id/imageView"

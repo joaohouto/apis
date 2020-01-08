@@ -125,10 +125,13 @@ public class ListaAnimais extends AppCompatActivity {
 
                         nomeAnimal = txtNomeAnimal.getText().toString();
 
+                        if (nomeAnimal.equals("")){
+                            nomeAnimal = "Vaca";
+                        }
+
                         ////Salva no BD
                         DbController database = new DbController(getBaseContext());
                         if (!database.adicionarAnimal(nomeAnimal, idLote)) {
-                            //Exibe mensagem de erro
                             Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
                         }
                         configurarLista();

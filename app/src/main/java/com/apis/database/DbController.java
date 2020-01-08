@@ -8,6 +8,7 @@ import android.os.Environment;
 import com.apis.models.Animal;
 import com.apis.models.Comportamento;
 import com.apis.models.Lote;
+import com.apis.models.Preferencia;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -59,6 +60,8 @@ public class DbController {
         cursor.close();
         return lotes;
     }
+    ///FIM LOTES
+
 
     ///ANIMAL
     public boolean adicionarAnimal(String nome, int loteId){
@@ -83,18 +86,18 @@ public class DbController {
         cursor.close();
         return animais;
     }
+    ///FIM ANIMAL
+
 
     ///COMPORTAMENTO
-    public boolean adicionarComportamento(int id_animal, String nome_animal, String data, String hora, String compFisio, String compRepro, String usoSombra, String obs){
+    public boolean adicionarComportamento(int id_animal, String nome_animal, String data, String hora, String comportamento, String obs){
 
         ContentValues cv = new ContentValues();
         cv.put("Animal_nome", nome_animal);
         cv.put("Animal_id", id_animal);
         cv.put("data", data);
         cv.put("hora", hora);
-        cv.put("fisiologico", compFisio);
-        cv.put("reprodutivo", compRepro);
-        cv.put("usosombra", usoSombra);
+        cv.put("comportamento", comportamento);
         cv.put("observacao", obs);
 
         return database.getWritableDatabase().insert("Comportamento", null, cv) > 0;
@@ -111,15 +114,44 @@ public class DbController {
             int id_animal = cursor.getInt(cursor.getColumnIndex("Animal_id"));
             String data = cursor.getString(cursor.getColumnIndex("data"));
             String hora = cursor.getString(cursor.getColumnIndex("hora"));
-            String compFisio = cursor.getString(cursor.getColumnIndex("fisiologico"));
-            String compRepro = cursor.getString(cursor.getColumnIndex("reprodutivo"));
-            String usoSombra = cursor.getString(cursor.getColumnIndex("usosombra"));
+            String comportamento = cursor.getString(cursor.getColumnIndex("comportamento"));
             String obs =  cursor.getString(cursor.getColumnIndex("observacao"));
-            comportamentos.add(new Comportamento(id, nome_animal, id_animal, data, hora, compFisio, compRepro, usoSombra, obs));
+            comportamentos.add(new Comportamento(id, nome_animal, id_animal, data, hora, comportamento, obs));
         }
         cursor.close();
         return comportamentos;
     }
+    ///FIM COMPORTAMENTO
+
+
+    ///PREFERENCIA
+    public boolean adicionarPreferencia(String nome_preferencia, String valor_preferencia){
+
+        ContentValues cv = new ContentValues();
+        cv.put("nome", nome_preferencia);
+        cv.put("valor", valor_preferencia);
+
+        return database.getWritableDatabase().insert("Preferencia", null, cv) > 0;
+    }
+
+    public ArrayList<Preferencia> retornarPreferencia(){
+
+        Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Preferencia", null);
+
+        ArrayList<Preferencia> preferencias = new ArrayList<>();
+        while(cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String nome_preferencia = cursor.getString(cursor.getColumnIndex("nome"));
+            String valor_preferencia = cursor.getString(cursor.getColumnIndex("valor"));
+
+            preferencias.add(new Preferencia(id, nome_preferencia, valor_preferencia));
+        }
+        cursor.close();
+        return preferencias;
+    }
+    ///FIM PREFERENCIA
+
+
 
     //Excluir
     public boolean excluir(int id, String tableName){
@@ -168,18 +200,17 @@ public class DbController {
             String id_animal = cursor.getString(cursor.getColumnIndex("Animal_id"));
             String data = cursor.getString(cursor.getColumnIndex("data"));
             String hora = cursor.getString(cursor.getColumnIndex("hora"));
-            String compFisio = cursor.getString(cursor.getColumnIndex("fisiologico"));
-            String compRepro = cursor.getString(cursor.getColumnIndex("reprodutivo"));
-            String usoSombra = cursor.getString(cursor.getColumnIndex("usosombra"));
+            String comportamento = cursor.getString(cursor.getColumnIndex("comportamento"));
             String obs = cursor.getString(cursor.getColumnIndex("observacao"));
 
-            String conteudo = "ID Animal: " + id_animal + ";" + nome_animal + ";Data/Hora: " + data + " " + hora + ";Fisiologico: " + compFisio + "; Reprodutivo: " + compRepro + "; Uso de sombra: " + usoSombra + "; Obs: " + obs;
+            //String conteudo = "ID Animal;Data;Hora;Fisiologico;Reprodutivo;Uso de sombra;Observação;";
+            String conteudo = id_animal+";"+nome_animal+";"+data+";"+hora+";"+comportamento+";"+obs;
 
             try {
                 try {
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote" + idLote + "_" + retornarNomeLote(idLote).replace(" ", "") + ".cvs");
-                    if (!f.exists()) {
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote"+idLote+"_"+retornarNomeLote(idLote).replace(" ", "")+".cvs");
+                    if (!f.exists()){
                         f.getParentFile().mkdirs();
                         f.createNewFile();
                     }
