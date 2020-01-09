@@ -1,2 +1,2 @@
 # Ápis
-App Android destinado a criação de etogramas de bovinos
+App Android criado com a intenção de facilitar o monitoramento do comportamento de bovinos a pasto. Ele é capaz de gerar um arquivo de texto contendo informações importantes de cada observação (id e nome do animal, data, hora, comportamento observado, etc.), que pode ser facilmente importado para o Excel. O Ápis mobile se adapta ao usuário, permitindo o lançamento de notificações que te lembrem de atualizar os dados dos animais, bem como a adição de tipos de comportamentos personalizados.
