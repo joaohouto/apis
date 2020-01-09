@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,15 @@ import androidx.preference.Preference;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apis.database.DbController;
+import com.apis.models.FileControl;
 import com.apis.models.Lote;
 import com.apis.models.Preferencia;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PreferenciaAdapter extends RecyclerView.Adapter<PreferenciaViewHolder>{
@@ -78,6 +84,17 @@ public class PreferenciaAdapter extends RecyclerView.Adapter<PreferenciaViewHold
                         .setNegativeButton("Cancelar", null)
                         .create()
                         .show();
+            }
+        });
+
+        //Click no checkbox
+        holder.nome.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FileControl fc = new FileControl();
+                fc.updateValue(preferencias.get(position).getNome());
+
             }
         });
     }

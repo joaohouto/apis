@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.apis.database.DbController;
 import com.apis.models.Comportamento;
 import com.apis.models.DateTime;
+import com.apis.models.FileControl;
 import com.apis.models.Preferencia;
 
 import java.io.File;
@@ -41,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AdicionarComportamento extends AppCompatActivity {
+
+    private ArrayList<String> nomeComportamento;
 
     private String nomeAnimal;
     private String nomeLote;
@@ -70,6 +73,10 @@ public class AdicionarComportamento extends AppCompatActivity {
         configurarListaPreferencias();
 
         getSupportActionBar().setTitle(nomeAnimal);
+
+        //Arquivo de comportamentos temporarios
+        FileControl fc = new FileControl();
+        fc.deleteTmpFile();
 
         //Click do botão 'Salvar'
         Button btnSalvar = (Button) findViewById(R.id.btnSalvar);
@@ -195,6 +202,17 @@ public class AdicionarComportamento extends AppCompatActivity {
         }
 
 
+        //Pega os dados personalizados
+
+        FileControl fc = new FileControl();
+        ArrayList<String> comportamentosPersonalizados = fc.returnValues();
+
+        while(!comportamentosPersonalizados.isEmpty()){
+            if(!comportamentosPersonalizados.equals("")){
+                comportamento = comportamento + comportamentosPersonalizados.remove(0)+";";
+            }
+        }
+
 
         EditText txtObs = (EditText) findViewById(R.id.textObs);
         obS = txtObs.getText().toString();
@@ -250,6 +268,11 @@ public class AdicionarComportamento extends AppCompatActivity {
                             }
 
                             Toast.makeText(getApplicationContext(), "Salvo!", Toast.LENGTH_LONG).show();
+
+                            //Arquivo de comportamentos temporarios
+                            FileControl fc = new FileControl();
+                            fc.deleteTmpFile();
+
                             finish();
                         }else {
                             Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
@@ -302,6 +325,7 @@ public class AdicionarComportamento extends AppCompatActivity {
             }
 
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void definirAlarme(int tempo){

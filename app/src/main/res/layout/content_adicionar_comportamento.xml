@@ -21,7 +21,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="24dp"
-            android:text="@string/title_activity_adicionar_comportamento"
+            android:text="Adicionar observação"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -172,7 +172,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            android:text="Personalizado"
+            android:text="Comportamento Personalizado"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnGroupSombra" />
 
@@ -232,7 +232,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="24dp"
-            android:text="Comportamentos registrados"
+            android:text="Registros"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.apis.R;
 import com.apis.database.DbController;
 import com.apis.models.Animal;
+import com.apis.models.FileControl;
 import com.apis.models.Preferencia;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -39,6 +40,9 @@ public class ListaPreferencias extends AppCompatActivity {
 
         configurarLista();
 
+        //Arquivo de comportamentos temporarios
+        FileControl fc = new FileControl();
+        fc.deleteTmpFile();
 
         //Botão flutuante
         FloatingActionButton fab = findViewById(R.id.btnAdicionarComportamento);
