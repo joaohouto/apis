@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -133,18 +134,18 @@ public class AdicionarComportamento extends AppCompatActivity {
         TextView atualizadoEm = (TextView) findViewById(R.id.atualizadoEm);
         String lastUpdate = database.pegarUltimoUpdateAnimal(idAnimal);
 
+        //Verifica se irá mandar notificações
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean receberNotificacao = sharedPreferences.getBoolean("notifications", false);
+        String intervaloAtualizacao = sharedPreferences.getString("intervalo_atualizacao", "0");
+
         if(lastUpdate != ""){
-            atualizadoEm.setText("Atualizado em " + lastUpdate);
+            atualizadoEm.setText(receberNotificacao ? "Notificações ativadas ("+intervaloAtualizacao+"min)" : "Notificações desativadas");
         }else {
             atualizadoEm.setText("Não existem observações para este animal.");
         }
 
-        //Verifica se irá mandar notificações
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        final boolean receberNotificacao = sharedPreferences.getBoolean("notifications", false);
 
-        final TextView lblNotificacoes = (TextView) findViewById(R.id.lbl_notificacoes_info);
-        lblNotificacoes.setText(receberNotificacao ? ">> Notificações ativadas" : ">> Notificações desativadas");
     }
 
     public void salvarDados(){
@@ -153,51 +154,51 @@ public class AdicionarComportamento extends AppCompatActivity {
         RadioGroup btnGroupFisio = (RadioGroup) findViewById(R.id.btnGroupFisio);
         switch (btnGroupFisio.getCheckedRadioButtonId()) {
             case R.id.radioPastej:
-                comportamento = comportamento + "Pastejando;";
+                comportamento += "Pastejando;";
                 break;
             case R.id.radioOP:
-                comportamento = comportamento +  "Ociosa em pé;";
+                comportamento +=  "Ociosa em pé;";
                 break;
             case R.id.radioOD:
-                comportamento = comportamento +  "Ociosa deitada;";
+                comportamento +=  "Ociosa deitada;";
                 break;
             case R.id.radioRumPe:
-                comportamento = comportamento +  "Ruminando em pé;";
+                comportamento +=  "Ruminando em pé;";
                 break;
             case R.id.radioRumDeit:
-                comportamento = comportamento +  "Ruminando deitada;";
+                comportamento +=  "Ruminando deitada;";
                 break;
             default:
-                comportamento = comportamento +  ";";
+                comportamento +=  ";";
                 break;
         }
 
         RadioGroup btnGroupRepro = (RadioGroup) findViewById(R.id.btnGroupRepro);
         switch (btnGroupRepro.getCheckedRadioButtonId()) {
             case R.id.radioAcMonta:
-                comportamento = comportamento + "Aceita monta;";
+                comportamento += "Aceita monta;";
                 break;
             case R.id.radioMontaOutra:
-                comportamento = comportamento + "Monta outra;";
+                comportamento += "Monta outra;";
                 break;
             case R.id.radioInqueta:
-                comportamento = comportamento + "Inquieta;";
+                comportamento += "Inquieta;";
                 break;
             default:
-                comportamento = comportamento +  ";";
+                comportamento +=  ";";
                 break;
         }
 
         RadioGroup btnGroupSombra = (RadioGroup) findViewById(R.id.btnGroupSombra);
         switch (btnGroupSombra.getCheckedRadioButtonId()) {
             case R.id.radioSol:
-                comportamento = comportamento + "Sol;";
+                comportamento += "Sol;";
                 break;
             case R.id.radioSombra:
-                comportamento = comportamento + "Sombra;";
+                comportamento += "Sombra;";
                 break;
             default:
-                comportamento = comportamento +  ";";
+                comportamento +=  ";";
                 break;
         }
 
@@ -205,13 +206,26 @@ public class AdicionarComportamento extends AppCompatActivity {
         //Pega os dados personalizados
 
         FileControl fc = new FileControl();
-        ArrayList<String> comportamentosPersonalizados = fc.returnValues();
+        ArrayList<String> comportamentosPersonalizados = fc.returnValues();//Pega os checkboxes marcados pelo usuário (ficam em um arquivo temporário)
+        ArrayList<Preferencia> prefs = database.retornarPreferencia();//Pega a lista de comportamentos personalizados definido pelo usuário
 
-        while(!comportamentosPersonalizados.isEmpty()){
-            if(!comportamentosPersonalizados.equals("")){
-                comportamento = comportamento + comportamentosPersonalizados.remove(0)+";";
+        ArrayList<String> comportamentosFinal = new ArrayList<String>();
+
+        //Ordena os dados dos checkboxes nas 'colunas'
+        for (int j=0;j<prefs.size();j++) {
+            for (int i=0;i<comportamentosPersonalizados.size();i++) {
+                if(prefs.get(j).getNome().equals(comportamentosPersonalizados.get(i))){
+                    comportamentosFinal.add(comportamentosPersonalizados.get(i));
+                }
             }
+            comportamentosFinal.add(";");
         }
+
+        for (int i=0;i<comportamentosFinal.size();i++) {
+            comportamento += comportamentosFinal.get(i);
+        }
+
+        comportamento = comportamento.substring (0, comportamento.length() - 1);//Remove o ; sobressalente (?)
 
 
         EditText txtObs = (EditText) findViewById(R.id.textObs);
