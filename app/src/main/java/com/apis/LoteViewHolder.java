@@ -2,6 +2,7 @@ package com.apis;
 
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -13,6 +14,8 @@ public class LoteViewHolder extends RecyclerView.ViewHolder {
     final TextView nome;
     final TextView experimento;
     final ImageButton btnExcluir;
+    final ImageButton btnExportarDados;
+
 
     public LoteViewHolder(View view) {
         super(view);
@@ -20,6 +23,8 @@ public class LoteViewHolder extends RecyclerView.ViewHolder {
         nome = (TextView) view.findViewById(R.id.lbl_nome_lote);
         experimento = (TextView) view.findViewById(R.id.lbl_experimento);
         btnExcluir = (ImageButton) view.findViewById(R.id.btnDeleteLote);
+        btnExportarDados = (ImageButton) view.findViewById(R.id.btnExportarDados);
+
     }
 
 }

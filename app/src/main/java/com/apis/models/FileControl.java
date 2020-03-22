@@ -1,5 +1,6 @@
 package com.apis.models;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -12,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.ContentHandler;
 import java.util.ArrayList;
 
 public class FileControl {
@@ -137,5 +139,14 @@ public class FileControl {
         }
 
         return valores;
+    }
+
+    public void deleteLoteFile(Context context, int idLote){
+
+        DbController database = new DbController(context);
+
+        String path = Environment.getExternalStorageDirectory() + "/apis/dados_Lote" + idLote + "_" + database.retornarNomeLote(idLote).replace(" ", "") + ".cvs";
+        File oldFile = new File(path);
+        oldFile.delete();
     }
 }

@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,10 +93,15 @@ public class ListaAnimais extends AppCompatActivity {
         ArrayList<Animal> animais = database.retornarAnimais(idLote);
 
         TextView nenhumAnimal = (TextView) findViewById(R.id.textNenhumAnimal);
+        ImageView alertImg = (ImageView) findViewById(R.id.alertImgAnimais);
         if(animais.size() > 0){
             nenhumAnimal.setVisibility(View.INVISIBLE);
+            alertImg.setVisibility(View.INVISIBLE);
+
         }else {
             nenhumAnimal.setVisibility(View.VISIBLE);
+            alertImg.setVisibility(View.VISIBLE);
+
         }
 
 

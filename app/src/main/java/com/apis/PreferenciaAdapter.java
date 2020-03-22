@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.preference.Preference;
@@ -30,11 +32,13 @@ public class PreferenciaAdapter extends RecyclerView.Adapter<PreferenciaViewHold
 
     private ArrayList<Preferencia> preferencias;
     private Context context;
+    private boolean exibirExcluir;
 
 
-    public PreferenciaAdapter(ArrayList preferencias, Context context){
+    public PreferenciaAdapter(ArrayList preferencias, boolean exibirExcluir, Context context){
         this.preferencias = preferencias;
         this.context = context;
+        this.exibirExcluir = exibirExcluir;
     }
 
     public void removerPreferencia(Preferencia preferencia){
@@ -75,9 +79,9 @@ public class PreferenciaAdapter extends RecyclerView.Adapter<PreferenciaViewHold
 
                                 if(database.excluir(preferencia.getId(), "Preferencia")) {
                                     removerPreferencia(preferencia);
-                                    Snackbar.make(view, "Excluído!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                    Toast.makeText(context, "Excluído!", Toast.LENGTH_LONG).show();
                                 }else{
-                                    Snackbar.make(view, "Erro ao excluir!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                    Toast.makeText(context, "Erro ao excluir!", Toast.LENGTH_LONG).show();
                                 }
                             }
                         })
@@ -97,6 +101,12 @@ public class PreferenciaAdapter extends RecyclerView.Adapter<PreferenciaViewHold
 
             }
         });
+
+        if(this.exibirExcluir) {
+            holder.txtDelete.setVisibility(View.VISIBLE);
+        } else {
+            holder.txtDelete.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

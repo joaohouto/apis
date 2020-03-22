@@ -20,17 +20,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:key="datetime_category"
-        app:title="Data e hora">
-
-        <SwitchPreferenceCompat
-            app:key="datetime_web"
-            android:summary="Se esta opção não estiver ativada o app usará a data e o horário do dispositivo."
-            app:title="Usar data e hora de um servidor NTP"/>
-
-
-    </PreferenceCategory>
+    
 
     <PreferenceCategory
         app:key="dados_category"
@@ -43,6 +33,7 @@
                 <intent android:action="android.intent.action.VIEW"
                     android:data="http://github.com/joaocou/apis/" />
         </Preference>
+
 
 
     </PreferenceCategory>

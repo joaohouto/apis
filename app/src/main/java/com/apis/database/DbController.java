@@ -33,7 +33,6 @@ public class DbController {
 
         return database.getWritableDatabase().insert("Lote", null, cv) > 0;
     }
-
     public String retornarNomeLote(int idLote){
 
         String nome = "";
@@ -45,7 +44,6 @@ public class DbController {
         return nome;
 
     }
-
     public ArrayList<Lote> retornarLotes(){
 
         Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Lote", null);
@@ -60,7 +58,6 @@ public class DbController {
         cursor.close();
         return lotes;
     }
-    ///FIM LOTES
 
 
     ///ANIMAL
@@ -72,7 +69,6 @@ public class DbController {
 
         return database.getWritableDatabase().insert("Animal", null, cv) > 0;
     }
-
     public ArrayList<Animal> retornarAnimais(int loteId){
 
         Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Animal WHERE Lote_id = "+loteId, null);
@@ -86,7 +82,6 @@ public class DbController {
         cursor.close();
         return animais;
     }
-    ///FIM ANIMAL
 
 
     ///COMPORTAMENTO
@@ -102,7 +97,6 @@ public class DbController {
 
         return database.getWritableDatabase().insert("Comportamento", null, cv) > 0;
     }
-
     public ArrayList<Comportamento> retornarComportamento(int animalId){
 
         Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Comportamento WHERE Animal_id = "+animalId, null);
@@ -121,7 +115,6 @@ public class DbController {
         cursor.close();
         return comportamentos;
     }
-    ///FIM COMPORTAMENTO
 
 
     ///PREFERENCIA
@@ -133,7 +126,6 @@ public class DbController {
 
         return database.getWritableDatabase().insert("Preferencia", null, cv) > 0;
     }
-
     public ArrayList<Preferencia> retornarPreferencia(){
 
         Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Preferencia", null);
@@ -149,8 +141,6 @@ public class DbController {
         cursor.close();
         return preferencias;
     }
-    ///FIM PREFERENCIA
-
 
 
     //Excluir
@@ -191,9 +181,10 @@ public class DbController {
     }
 
     //Exportar dados
-    public String exportarDados(int idLote){
+    public boolean exportarDados(int idLote, int idAnimal){
 
-        Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Comportamento WHERE Animal_id IN (SELECT id FROM Animal WHERE Lote_id = "+idLote+");", null);
+        Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Comportamento WHERE Animal_id = " + idAnimal, null);
+
         while(cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex("id"));
             String nome_animal = cursor.getString(cursor.getColumnIndex("Animal_nome"));
@@ -208,8 +199,8 @@ public class DbController {
 
             try {
                 try {
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis/exportado/", "dados_Lote"+idLote+"_Animal"+idAnimal+".cvs");
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote"+idLote+"_"+retornarNomeLote(idLote).replace(" ", "")+".cvs");
                     if (!f.exists()){
                         f.getParentFile().mkdirs();
                         f.createNewFile();
@@ -233,6 +224,15 @@ public class DbController {
             cursor.close();
         }
 
-        return "Dados exportados para dados_Lote" + idLote + "_" + retornarNomeLote(idLote).replace(" ", "") + ".cvs";
+        return true;
+    }
+
+    //Apagar tudo
+    public void apagarTudo() {
+        database.getWritableDatabase().rawQuery("Delete from Lote", null);
+        database.getWritableDatabase().rawQuery("Delete from Comportamento", null);
+        database.getWritableDatabase().rawQuery("Delete from Animal", null);
+        database.getWritableDatabase().rawQuery("Delete from Preferencia", null);
+
     }
 }

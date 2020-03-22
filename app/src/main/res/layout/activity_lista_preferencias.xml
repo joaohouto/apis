@@ -7,6 +7,16 @@
     tools:context=".ListaPreferencias">
 
     <TextView
+        android:id="@+id/txtNenhumComportamentoPersonalizado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nenhum comportamento cadastrado!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerPreferencias" />
+
+    <TextView
         android:id="@+id/lbl_comportamento_personalizado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,5 +51,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/plus" />
+
+    <ImageView
+        android:id="@+id/alertImg"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/txtNenhumComportamentoPersonalizado"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/alert_rounded" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

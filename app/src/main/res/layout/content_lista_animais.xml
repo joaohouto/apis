@@ -8,6 +8,16 @@
     tools:context=".ListaAnimais"
     tools:showIn="@layout/activity_lista_animais">
 
+    <ImageView
+        android:id="@+id/alertImgAnimais"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/textNenhumAnimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/alert_rounded" />
+
     <TextView
         android:id="@+id/txtNomeLote"
         android:layout_width="wrap_content"
@@ -33,16 +43,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtNomeLote" />
 
-    <TextView
-        android:id="@+id/textNenhumAnimal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nenhum animal cadastrado!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerAnimais"
         android:layout_width="0dp"
@@ -55,5 +55,15 @@
         app:layout_constraintTop_toBottomOf="@+id/txtNomeLote">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/textNenhumAnimal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nenhum animal cadastrado!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

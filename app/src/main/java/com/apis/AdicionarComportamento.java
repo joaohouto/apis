@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -87,7 +88,36 @@ public class AdicionarComportamento extends AppCompatActivity {
             }
         });
 
+        //Click do botão 'Exportar dados'
+        Button btnExportar = (Button) findViewById(R.id.btnExportarDados);
+        btnExportar.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                exportarDados();
+            }
+        });
+
+
     }
+
+    public void exportarDados() {
+
+        DbController database = new DbController(this);
+        database.exportarDados(idLote, idAnimal);
+
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        File fileWithinMyDir = new File(Environment.getExternalStorageDirectory() + "/apis/exportado/", "dados_Lote"+idLote+"_Animal"+idAnimal+".cvs");
+
+        if(fileWithinMyDir.exists()) {
+            intentShareFile.setType("application/pdf");
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse(Environment.getExternalStorageDirectory() + "/apis/exportado/dados_Lote"+idLote+"_Animal"+idAnimal+".cvs"));
+
+            intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                    "Dados Lote " + idLote + ": " + nomeLote);
+
+            startActivity(Intent.createChooser(intentShareFile, "Enviar para"));
+        }
+    }
+
 
     public void configurarListaComportamentos() {
 
@@ -111,7 +141,7 @@ public class AdicionarComportamento extends AppCompatActivity {
         ArrayList<Preferencia> preferencias = database.retornarPreferencia();
 
 
-        recyclerViewComp.setAdapter(new PreferenciaAdapter(preferencias, this));
+        recyclerViewComp.setAdapter(new PreferenciaAdapter(preferencias, false, this));
         LinearLayoutManager layoutComp = new LinearLayoutManager(this);
 
         recyclerViewComp.setLayoutManager(layoutComp);
@@ -142,7 +172,7 @@ public class AdicionarComportamento extends AppCompatActivity {
         if(lastUpdate != ""){
             atualizadoEm.setText(receberNotificacao ? "Notificações ativadas ("+intervaloAtualizacao+"min)" : "Notificações desativadas");
         }else {
-            atualizadoEm.setText("Não existem observações para este animal.");
+            atualizadoEm.setText("Não existem registros para este animal.");
         }
 
 
@@ -316,7 +346,7 @@ public class AdicionarComportamento extends AppCompatActivity {
         try {
                 try {
 
-                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote"+idLote+"_"+database.retornarNomeLote(idLote).replace(" ", "")+".cvs");
+                    File f = new File(Environment.getExternalStorageDirectory() + "/apis", "dados_Lote"+idLote+".cvs");
                     if (!f.exists()){
                         f.getParentFile().mkdirs();
                         f.createNewFile();
@@ -339,7 +369,6 @@ public class AdicionarComportamento extends AppCompatActivity {
             }
 
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void definirAlarme(int tempo){

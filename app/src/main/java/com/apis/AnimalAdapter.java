@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,9 +67,9 @@ public class AnimalAdapter extends RecyclerView.Adapter<AnimalViewHolder> {
                                 DbController database = new DbController(view.getContext());
                                 if(database.excluir(animal.getId(), "Animal")) {
                                     removerAnimal(animal);
-                                    Snackbar.make(view, "Excluído!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                    Toast.makeText(context, "Excluído!", Toast.LENGTH_LONG).show();
                                 }else{
-                                    Snackbar.make(view, "Erro ao excluir!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                    Toast.makeText(context, "Erro ao excluir!", Toast.LENGTH_LONG).show();
                                 }
                             }
                         })

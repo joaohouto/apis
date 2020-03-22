@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,8 +62,18 @@ public class ListaPreferencias extends AppCompatActivity {
         DbController database = new DbController(this);
         ArrayList<Preferencia> preferencias = database.retornarPreferencia();
 
+        TextView nenhumaPref = (TextView) findViewById(R.id.txtNenhumComportamentoPersonalizado);
+        ImageView alertImg = (ImageView) findViewById(R.id.alertImg);
+        if(preferencias.size() > 0){
+            nenhumaPref.setVisibility(View.INVISIBLE);
+            alertImg.setVisibility(View.INVISIBLE);
+        }else {
+            nenhumaPref.setVisibility(View.VISIBLE);
+            alertImg.setVisibility(View.VISIBLE);
+        }
 
-        recyclerView.setAdapter(new PreferenciaAdapter(preferencias, this));
+
+        recyclerView.setAdapter(new PreferenciaAdapter(preferencias, true, this));
         LinearLayoutManager layout = new LinearLayoutManager(this);
 
         recyclerView.setLayoutManager(layout);

@@ -4,25 +4,29 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apis.database.DbController;
+import com.apis.models.FileControl;
 import com.apis.models.Lote;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class LoteAdapter extends RecyclerView.Adapter<LoteViewHolder>{
 
     private ArrayList<Lote> lotes;
     private Context context;
-
 
     public LoteAdapter(ArrayList lotes, Context context){
         this.lotes = lotes;
@@ -59,16 +63,23 @@ public class LoteAdapter extends RecyclerView.Adapter<LoteViewHolder>{
                 final View view = v;
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder.setTitle("Confirmação")
-                        .setMessage("Tem certeza que deseja excluir este lote?")
+                        .setMessage("Tem certeza que deseja excluir este lote? Seus dados também serão excluídos.")
                         .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
                                 DbController database = new DbController(view.getContext());
+
                                 if(database.excluir(lote.getId(), "Lote")) {
                                     removerLote(lote);
-                                    Snackbar.make(view, "Excluído!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+                                    //Apaga arquivo
+                                    FileControl fileControl = new FileControl();
+                                    fileControl.deleteLoteFile(context, lote.getId());
+
+                                    Toast.makeText(context, "Excluído!", Toast.LENGTH_LONG).show();
                                 }else{
-                                    Snackbar.make(view, "Erro ao excluir!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                    Toast.makeText(context, "Erro ao excluir!", Toast.LENGTH_LONG).show();
                                 }
                             }
                         })
@@ -78,18 +89,36 @@ public class LoteAdapter extends RecyclerView.Adapter<LoteViewHolder>{
             }
         });
 
+        //Action botão EXPORTAR
+        holder.btnExportarDados.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //Tela de compartilhamento
+                Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+                File fileWithinMyDir = new File(Environment.getExternalStorageDirectory() + "/apis/", "dados_Lote"+lote.getId()+".cvs");
+
+                if(fileWithinMyDir.exists()) {
+                    intentShareFile.setType("application/pdf");
+                    intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse(Environment.getExternalStorageDirectory() + "/apis/dados_Lote"+lote.getId()+".cvs"));
+
+                    intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                            "Dados Lote " + lote.getId() + ": " + lote.getNome());
+
+                    context.startActivity(Intent.createChooser(intentShareFile, "Enviar para"));
+                }
+            }
+        });
+
 
         //Acessar lote
         holder.itemLista.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-        //Passa o id e o nome do lote clicado para a Activity ListaAnimais
-        Intent intent = new Intent(context, ListaAnimais.class);
-        intent.putExtra("lote_nome", lotes.get(position).getNome());
-        intent.putExtra("lote_id", lotes.get(position).getId());
-        context.startActivity(intent);
-
+                Intent intent = new Intent(context, ListaAnimais.class);
+                intent.putExtra("lote_nome", lotes.get(position).getNome());
+                intent.putExtra("lote_id", lotes.get(position).getId());
+                context.startActivity(intent);
             }
         });
     }

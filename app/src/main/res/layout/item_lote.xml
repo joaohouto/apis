@@ -47,6 +47,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/btnExportarDados"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintEnd_toStartOf="@+id/btnDeleteLote"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/database_export" />
+
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
@@ -60,6 +73,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lbl_experimento" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

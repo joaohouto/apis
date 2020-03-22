@@ -21,7 +21,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="24dp"
-            android:text="Adicionar observação"
+            android:text="Adicionar registro"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -221,9 +221,22 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/btn_salvar"
+            android:textColorLink="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textObs" />
+
+        <ImageView
+            android:id="@+id/fundoCinza"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerComportamento"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSalvar"
+            app:srcCompat="@color/gray" />
 
         <TextView
             android:id="@+id/lbl_comportamentos_reg"
@@ -231,7 +244,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:text="Registros"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -264,6 +277,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/atualizadoEm"
             tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/btnExportarDados"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="Exportar"
+            app:layout_constraintEnd_toEndOf="@+id/fundoCinza"
+            app:layout_constraintTop_toTopOf="@+id/fundoCinza" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

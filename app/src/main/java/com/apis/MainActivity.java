@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.apis.database.DbController;
+import com.apis.models.FileControl;
 import com.apis.models.Lote;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -89,10 +91,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ArrayList<Lote> lotes = database.retornarLotes();
 
         TextView nenhumLote = (TextView) findViewById(R.id.textNenhumLote);
+        ImageView alertImg  = (ImageView) findViewById(R.id.alertImgLotes);
         if(lotes.size() > 0){
             nenhumLote.setVisibility(View.INVISIBLE);
+            alertImg.setVisibility(View.INVISIBLE);
+
         }else {
             nenhumLote.setVisibility(View.VISIBLE);
+            alertImg.setVisibility(View.VISIBLE);
         }
 
         recyclerView.setAdapter(new LoteAdapter(lotes, this));
@@ -222,6 +228,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);
+        } else if (id == R.id.nav_delete_all) {
+
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
