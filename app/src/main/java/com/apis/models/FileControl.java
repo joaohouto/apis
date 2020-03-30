@@ -149,4 +149,12 @@ public class FileControl {
         File oldFile = new File(path);
         oldFile.delete();
     }
+
+    public void deleteEverthing(){
+
+        String path = Environment.getExternalStorageDirectory() + "/apis/";
+        File oldFile = new File(path);
+        oldFile.delete();
+    }
+
 }

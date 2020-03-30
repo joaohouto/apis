@@ -131,16 +131,34 @@ public class ListaAnimais extends AppCompatActivity {
 
                         nomeAnimal = txtNomeAnimal.getText().toString();
 
-                        if (nomeAnimal.equals("")){
-                            nomeAnimal = "Vaca";
+                        boolean camposValidos = true;
+                        if(nomeAnimal.equals("")){
+                            camposValidos = false;
                         }
 
-                        ////Salva no BD
-                        DbController database = new DbController(getBaseContext());
-                        if (!database.adicionarAnimal(nomeAnimal, idLote)) {
-                            Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                        if(camposValidos) {
+
+                            DbController database = new DbController(getBaseContext());
+
+                            boolean animalJaExiste = false;
+                            if(database.animalExiste(nomeAnimal)){
+                                animalJaExiste = true;
+                            }
+
+                            if(animalJaExiste) {
+                                Toast.makeText(getApplicationContext(), "O animal com esse nome já existe!", Toast.LENGTH_LONG).show();
+
+                            } else {
+                                ////Salva no BD
+                                if (!database.adicionarAnimal(nomeAnimal, idLote)) {
+                                    Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                                }
+                                configurarLista();
+                            }
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "O animal não pode ter um nome em branco!", Toast.LENGTH_LONG).show();
                         }
-                        configurarLista();
                     }
                 })
                 .setNegativeButton("Cancelar",

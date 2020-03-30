@@ -70,7 +70,7 @@ public class PreferenciaAdapter extends RecyclerView.Adapter<PreferenciaViewHold
                 final View view = v;
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder.setTitle("Confirmação")
-                        .setMessage("Tem certeza que deseja excluir este comportamento?")
+                        .setMessage("Tem certeza que deseja excluir? Esteja ciente que a coluna referente a este comportamento também será excluida, podendo causar problemas na hora de avaliar os dados dos animais.")
                         .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

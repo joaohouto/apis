@@ -130,19 +130,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         nomeExperimento = txtExperimento.getText().toString();
 
                         boolean camposValidos = true;
-
-                        if (nomeLote.equals("")){
+                        if(nomeLote.equals("")){
                             camposValidos = false;
                         }
 
-                        if (camposValidos){
+                        if(camposValidos){
 
-                            ////Salva no BD
                             DbController database = new DbController(getBaseContext());
-                            if (!database.adicionarLote(nomeLote, nomeExperimento)) {
-                                Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                            boolean loteJaExiste = false;
+                            if(database.loteExiste(nomeLote)){
+                                loteJaExiste = true;
                             }
-                            configurarLista();
+
+                            if(loteJaExiste) {
+                                Toast.makeText(getApplicationContext(), "O lote com esse nome já existe!", Toast.LENGTH_LONG).show();
+
+                            } else {
+                                ////Salva no BD
+                                if (!database.adicionarLote(nomeLote, nomeExperimento)) {
+                                    Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                                }
+                                configurarLista();
+                            }
                         }else{
                             Toast.makeText(getApplicationContext(), "O lote não pode ter um nome em branco!", Toast.LENGTH_LONG).show();
                         }
@@ -229,6 +238,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             i.setData(Uri.parse(url));
             startActivity(i);
         } else if (id == R.id.nav_delete_all) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Confirmação")
+                    .setMessage("Tem certeza que deseja excluir todos os dados do app? Isso irá apagar tudo e a ação não pode ser desfeita.")
+                    .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            DbController database = new DbController(getBaseContext());
+                            database.apagarTudo();
+                        }
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .create()
+                    .show();
 
         }
 

@@ -112,7 +112,7 @@ public class AdicionarComportamento extends AppCompatActivity {
             intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse(Environment.getExternalStorageDirectory() + "/apis/exportado/dados_Lote"+idLote+"_Animal"+idAnimal+".cvs"));
 
             intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
-                    "Dados Lote " + idLote + ": " + nomeLote);
+                    "Dados" + nomeLote + " - " + nomeAnimal);
 
             startActivity(Intent.createChooser(intentShareFile, "Enviar para"));
         }

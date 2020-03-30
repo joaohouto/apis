@@ -106,6 +106,8 @@ public class LoteAdapter extends RecyclerView.Adapter<LoteViewHolder>{
                             "Dados Lote " + lote.getId() + ": " + lote.getNome());
 
                     context.startActivity(Intent.createChooser(intentShareFile, "Enviar para"));
+                } else {
+                    Toast.makeText(context, "Não existem dados para este lote!", Toast.LENGTH_LONG).show();
                 }
             }
         });

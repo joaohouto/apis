@@ -7,6 +7,7 @@ import android.os.Environment;
 
 import com.apis.models.Animal;
 import com.apis.models.Comportamento;
+import com.apis.models.FileControl;
 import com.apis.models.Lote;
 import com.apis.models.Preferencia;
 
@@ -44,6 +45,16 @@ public class DbController {
         return nome;
 
     }
+    public boolean loteExiste(String nomeLote){
+
+        Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Lote WHERE nome = '"+nomeLote+"'", null);
+        if(cursor.getCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
     public ArrayList<Lote> retornarLotes(){
 
         Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Lote", null);
@@ -68,6 +79,16 @@ public class DbController {
         cv.put("Lote_id", loteId);
 
         return database.getWritableDatabase().insert("Animal", null, cv) > 0;
+    }
+    public boolean animalExiste(String nomeAnimal){
+
+        Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Animal WHERE nome = '"+nomeAnimal+"'", null);
+        if(cursor.getCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
     public ArrayList<Animal> retornarAnimais(int loteId){
 
@@ -183,6 +204,11 @@ public class DbController {
     //Exportar dados
     public boolean exportarDados(int idLote, int idAnimal){
 
+        //Antes de fazer a consulta
+        //Apaga o arquivo de dados do animal, se houver
+        File oldFile = new File(Environment.getExternalStorageDirectory() + "/apis/exportado/", "dados_Lote"+idLote+"_Animal"+idAnimal+".cvs");
+        oldFile.delete();
+
         Cursor cursor = database.getWritableDatabase().rawQuery("SELECT * FROM Comportamento WHERE Animal_id = " + idAnimal, null);
 
         while(cursor.moveToNext()) {
@@ -199,6 +225,8 @@ public class DbController {
 
             try {
                 try {
+
+                    //Cria outro arquivo, mais novo
                     File f = new File(Environment.getExternalStorageDirectory() + "/apis/exportado/", "dados_Lote"+idLote+"_Animal"+idAnimal+".cvs");
 
                     if (!f.exists()){
@@ -233,6 +261,9 @@ public class DbController {
         database.getWritableDatabase().rawQuery("Delete from Comportamento", null);
         database.getWritableDatabase().rawQuery("Delete from Animal", null);
         database.getWritableDatabase().rawQuery("Delete from Preferencia", null);
+
+        FileControl fc = new FileControl();
+        fc.deleteEverthing();
 
     }
 }
