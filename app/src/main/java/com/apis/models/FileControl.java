@@ -150,11 +150,15 @@ public class FileControl {
         oldFile.delete();
     }
 
-    public void deleteEverthing(){
+    public void deleteEverthing() {
+        File myDir = new File(Environment.getExternalStorageDirectory() + "/apis/");
 
-        String path = Environment.getExternalStorageDirectory() + "/apis/";
-        File oldFile = new File(path);
-        oldFile.delete();
+        if (myDir.isDirectory()) {
+            String[] children = myDir.list();
+            for (int i = 0; i < children.length; i++) {
+                new File(myDir, children[i]).delete();
+            }
+        }
     }
 
 }

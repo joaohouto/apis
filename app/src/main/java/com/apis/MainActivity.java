@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String CHANNEL_ID = "main.notifications";
 
+    DbController database = new DbController(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,12 +243,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Confirmação")
-                    .setMessage("Tem certeza que deseja excluir todos os dados do app? Isso irá apagar tudo e a ação não pode ser desfeita.")
+                    .setMessage("Tem certeza que deseja excluir todos os dados do app? Isso irá apagar (lotes, animais, comportamentos, etc.) e a ação não poderá ser desfeita.")
                     .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            DbController database = new DbController(getBaseContext());
-                            database.apagarTudo();
+                            if(database.apagarTudo()){
+                                Toast.makeText(getBaseContext(), "Feito!", Toast.LENGTH_LONG).show();
+
+                                finish();
+                                startActivity(getIntent());
+                            } else {
+                                Toast.makeText(getBaseContext(), "Erro!", Toast.LENGTH_LONG).show();
+                            }
                         }
                     })
                     .setNegativeButton("Cancelar", null)

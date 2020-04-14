@@ -249,21 +249,23 @@ public class DbController {
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
-            cursor.close();
         }
 
         return true;
     }
 
     //Apagar tudo
-    public void apagarTudo() {
-        database.getWritableDatabase().rawQuery("Delete from Lote", null);
-        database.getWritableDatabase().rawQuery("Delete from Comportamento", null);
-        database.getWritableDatabase().rawQuery("Delete from Animal", null);
-        database.getWritableDatabase().rawQuery("Delete from Preferencia", null);
+    public boolean apagarTudo() {
+
+        database.getWritableDatabase().delete("Lote", "1", null);
+        database.getWritableDatabase().delete("Comportamento", "1", null);
+        database.getWritableDatabase().delete("Animal", "1", null);
+        database.getWritableDatabase().delete("Preferencia", "1", null);
 
         FileControl fc = new FileControl();
         fc.deleteEverthing();
+
+        return true;
 
     }
 }

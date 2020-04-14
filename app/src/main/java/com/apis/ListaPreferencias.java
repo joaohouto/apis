@@ -98,10 +98,15 @@ public class ListaPreferencias extends AppCompatActivity {
 
                         nomePreferencia = txtNomePreferencia.getText().toString();
 
-                        ////Salva no BD
-                        DbController database = new DbController(getBaseContext());
-                        if (!database.adicionarPreferencia(nomePreferencia, "")) {
-                            Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                        if(!nomePreferencia.equals("")) {
+                            ////Salva no BD
+                            DbController database = new DbController(getBaseContext());
+                            if (!database.adicionarPreferencia(nomePreferencia, "")) {
+                                Toast.makeText(getApplicationContext(), "Erro ao salvar!", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getBaseContext(), "O comportamento deve ter um nome!", Toast.LENGTH_LONG).show();
+
                         }
                         configurarLista();
                     }
