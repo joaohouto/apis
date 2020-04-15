@@ -1,6 +1,6 @@
 # Ápis
 
-O Ápis é um aplicativo Android para o uxílio do monitoramento do comportamento de bovinos a pasto.
+O Ápis é um aplicativo Android que auxilia no monitoramento do comportamento de bovinos a pasto.
 
 #### Funcionalidades
 
