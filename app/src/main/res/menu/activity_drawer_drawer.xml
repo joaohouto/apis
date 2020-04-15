@@ -28,6 +28,11 @@
     <item android:title="Sobre">
         <menu>
             <item
+                android:id="@+id/nav_intro"
+                android:icon="@drawable/help"
+                android:title="Introdução" />
+
+            <item
                 android:id="@+id/nav_github"
                 android:icon="@drawable/github"
                 android:title="GitHub" />

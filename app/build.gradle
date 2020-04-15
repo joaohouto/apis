@@ -32,4 +32,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.github.instacart.truetime-android:library-extension-rx:3.3'
     implementation 'commons-net:commons-net:3.6'
+
+    implementation 'com.github.AppIntro:AppIntro:4.2.3'
 }

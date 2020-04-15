@@ -34,6 +34,12 @@
                     android:data="http://github.com/joaocou/apis/" />
         </Preference>
 
+        <Preference
+            app:key="icons"
+            app:summary="http://flaticon.com e http://material.io"
+            app:title="Ícones e recursos gráficos">
+        </Preference>
+
 
 
     </PreferenceCategory>

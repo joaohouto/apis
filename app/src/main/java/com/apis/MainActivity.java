@@ -234,7 +234,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, ListaPreferencias.class);
             this.startActivity(intent);
 
-        } else if (id == R.id.nav_github) {
+        }else if (id == R.id.nav_intro) {
+            Intent intent = new Intent(this, IntroActivity.class);
+            this.startActivity(intent);
+
+        }else if (id == R.id.nav_github) {
             String url = "http://github.com/joaocou/apis";
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));

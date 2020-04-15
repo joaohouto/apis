@@ -23,10 +23,27 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void mostrarMainActivity() {
-        Intent intent = new Intent(
-                SplashScreen.this,MainActivity.class
-        );
-        startActivity(intent);
-        finish();
+
+        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
+        if (isFirstRun){
+
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("isFirstRun", false)
+                    .apply();
+
+            Intent intent = new Intent(
+                    SplashScreen.this,IntroActivity.class
+            );
+            startActivity(intent);
+            finish();
+
+        } else {
+            Intent intent = new Intent(
+                    SplashScreen.this,MainActivity.class
+            );
+            startActivity(intent);
+            finish();
+        }
     }
 }
