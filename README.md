@@ -1,6 +1,4 @@
-<p align="center">
-   <img src="./app/src/main/ic_launcher-web.png" width="180"/>
-</p>
+ <img src="./app/src/main/ic_launcher-web.png" width="180"/>
 
 # Ápis
 
