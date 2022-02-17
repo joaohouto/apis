@@ -2,20 +2,19 @@
 
 # Ápis
 
-[![Author](https://img.shields.io/badge/author-joaocou-222222)](https://github.com/joaocou)
-[![Languages](https://img.shields.io/github/languages/count/joaocou/apis?color=222222)](https://github.com/joaocou/apis/)
+[![Author](https://img.shields.io/badge/author-joaohouto-222222)](https://github.com/joaohouto)
 
-O Ápis é um aplicativo Android que auxilia no monitoramento do comportamento de bovinos a pasto.
+
+O Ápis é um app nativo para Android, feito em Java, que ajudei a desenvolver durante um projeto de iniciação científica do Instituto Federal de Mato Grosso do Sul. Ele facilita a coleta de dados proveniente da análise do comportamento de bovinos a pasto. Um arquivo no formato de planilha pode ser exportado com todos os dados do app.
 
 #### 📌 Características
+
+O funcionamento é bem simples: o usuário pode criar lotes, e dentro dos lotes pode adicionar animais. Para cada animal, pode inserir observações, estas que o usuário mesmo define em uma outra página. Caso tenha optado, o utilizador recebe uma notificação para realizar a atualização dos dados do animal.
 
 * Animais organizados em lotes;
 * Adição de comportamentos personalizados para os registros;
 * Notificações para atualização dos registros de lote;
 * Dados organizados e exportados em arquivos _.cvs_;
-
-#### 📄 Classes
-
 
 #### 📄 Exemplo de saída:
 
